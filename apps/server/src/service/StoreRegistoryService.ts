@@ -1,6 +1,3 @@
-'use strict';
-
-
 /**
  * For getting the tittle of the dapp store
  * Returns the store title

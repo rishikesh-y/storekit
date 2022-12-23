@@ -1,5 +1,3 @@
-'use strict';
-
 import {DAppInterface} from '../types/dappInterface';
 
 /**
@@ -248,62 +246,6 @@ exports.getFeaturedDapps = function() {
   },
   "category" : "books"
 } ];
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
-    }
-  });
-}
-
-
-/**
- * For updating the exisitng dapp
- * Updates the existing dapp
- *
- * body Dapp Send the request with the updated parameters
- * returns Dapp
- **/
-exports.updateDapp = function(body:DAppInterface) {
-  return new Promise<void>(function(resolve, reject) {
-    var examples:any = {};
-    examples['application/json'] = {
-  "repoUrl" : "http://example.com/aeiou",
-  "isMatureForAudience" : true,
-  "listDate" : "2000-01-23",
-  "images" : {
-    "logo" : "",
-    "banner" : "",
-    "screenshots" : [ "", "" ]
-  },
-  "chains" : [ 6, 6 ],
-  "dappId" : "dappId",
-  "description" : "Description of Dapp",
-  "geoRestrictions" : {
-    "blockedCountries" : [ "blockedCountries", "blockedCountries" ],
-    "allowedCountries" : [ "allowedCountries", "allowedCountries" ]
-  },
-  "language" : "language",
-  "version" : "version",
-  "availableOnPlatform" : [ "ios", "ios" ],
-  "isSelfModerated" : true,
-  "tags" : [ "tags", "tags" ],
-  "isListed" : true,
-  "minAge" : 0,
-  "name" : "Dapp Name",
-  "developer" : {
-    "legalName" : "legalName",
-    "website" : "website",
-    "githubId" : "githubId",
-    "logo" : "logo",
-    "privacyPolicyUrl" : "privacyPolicyUrl",
-    "support" : {
-      "url" : "http://example.com/aeiou",
-      "email" : ""
-    }
-  },
-  "category" : "books"
-};
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
     } else {

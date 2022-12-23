@@ -10,10 +10,10 @@ class StoreRegistory {
 
     getStoreTitle = function(req: Request, res: Response) {
         StoreRegistoryService.getStoreTitle()
-    .then(function (response) {
+    .then(function (response: any) {
       utils.writeJson(res, response);
     })
-    .catch(function (response) {
+    .catch(function (response: any) {
       utils.writeJson(res, response);
     });
     }
