@@ -1,4 +1,8 @@
 import { Router, Request, Response, NextFunction } from 'express';
+import { DAppInterface } from '../types/dappInterface';
+
+var utils = require('../utils/writer.js');
+var DappRegistoryService = require('../service/DappRegistoryService');
 
 class DappRegistory {
 
@@ -7,22 +11,57 @@ class DappRegistory {
       this.addDapp = this.addDapp.bind(this);
       this.updateDapp = this.updateDapp.bind(this);
       this.deleteDapp = this.deleteDapp.bind(this);
+      this.getFeaturedDapps = this.getFeaturedDapps.bind(this);
     }
 
-    getDapps = function(req: Request, res: Response, next: NextFunction) {
-        res.send("Hello World!")
+    getDapps = function(req: Request, res: Response, query:DAppInterface, search:any) {
+        DappRegistoryService.getDapps(query, search)
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
     }
 
-    addDapp = function(req: Request, res: Response, next: NextFunction) {
-        res.send("Hello World!")
+    addDapp = function(req: Request, res: Response, body:DAppInterface) {
+       DappRegistoryService.addDapp(body)
+       .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
     }
 
-    updateDapp = function(req: Request, res: Response, next: NextFunction) {
-        res.send("Hello World!")
+    updateDapp = function(req: Request, res: Response) {
+        DappRegistoryService.updateDapp(body)
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
     }
 
-    deleteDapp = function(req: Request, res: Response, next: NextFunction) {
-        res.send("Hello World!")
+    deleteDapp = function(req: Request, res: Response, email:string, dappId:string) {
+        DappRegistoryService.deleteDapp(email, dappId)
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+    }
+
+    getFeaturedDapps = function(req: Request, res: Response) {
+       DappRegistoryService.getFeaturedDapps()
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
     }
 }
 
