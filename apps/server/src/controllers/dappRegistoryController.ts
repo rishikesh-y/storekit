@@ -17,11 +17,11 @@ class DappRegistory {
 
   getDapps = async (req: Request, res: Response) => {
     const query = req.params.query;
-    const search: {} = req.query.search;
+    const search: FilterOptions = req.query;
 
     await DappStore.init();
     try {
-      const response = DappStore.search(query, search);
+      const response: DAppSchema[] = DappStore.search(query, search);
       utils.writeJson(res, response);
     } catch (e) {
       utils.writeJson(res, e);
