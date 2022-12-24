@@ -1,22 +1,24 @@
-import { Request, Response } from 'express';
-var utils = require('../utils/writer.js');
-var StoreRegistoryService = require('../service/StoreRegistoryService');
+import { Request, Response } from "express";
+import { DappStoreRegistry } from "@merokudao/dapp-store-registry";
+
+var utils = require("../utils/writer.js");
 
 class StoreRegistory {
+  constructor() {
+    this.getStoreTitle = this.getStoreTitle.bind(this);
+  }
 
-    constructor() {    
-      this.getStoreTitle = this.getStoreTitle.bind(this);
-    }
-
-    getStoreTitle = function(req: Request, res: Response) {
-        StoreRegistoryService.getStoreTitle()
-    .then(function (response: any) {
-      utils.writeJson(res, response);
-    })
-    .catch(function (response: any) {
-      utils.writeJson(res, response);
-    });
-    }
+  getStoreTitle = async (req: Request, res: Response) => {
+    const DappStore = new DappStoreRegistry();
+    await DappStore.init();
+    DappStore.getRegistryTitle()
+      .then(function (response: any) {
+        utils.writeJson(res, response);
+      })
+      .catch(function (response: any) {
+        utils.writeJson(res, response);
+      });
+  };
 }
 
 export default new StoreRegistory();
