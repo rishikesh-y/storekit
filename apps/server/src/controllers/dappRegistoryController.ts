@@ -1,5 +1,5 @@
-import { Router, Request, Response, NextFunction } from 'express';
-import { DAppInterface } from '../types/dappInterface';
+import { Request, Response } from 'express';
+import {Dapp} from '@merokudao/dapp-store-registry'
 
 var utils = require('../utils/writer.js');
 var DappRegistoryService = require('../service/DappRegistoryService');
@@ -14,7 +14,9 @@ class DappRegistory {
       this.getFeaturedDapps = this.getFeaturedDapps.bind(this);
     }
 
-    getDapps = function(req: Request, res: Response, query:string, search:any) {
+    getDapps = function(req: Request, res: Response) {
+        const query = req.params.query;
+        const search = req.query.search;
         DappRegistoryService.getDapps(query, search)
     .then(function (response: any) {
       utils.writeJson(res, response);
@@ -24,7 +26,8 @@ class DappRegistory {
     });
     }
 
-    addDapp = function(req: Request, res: Response, body:DAppInterface) {
+    addDapp = function(req: Request, res: Response) {
+      const body:Dapp = req.body;
        DappRegistoryService.addDapp(body)
        .then(function (response: any) {
       utils.writeJson(res, response);
@@ -34,7 +37,8 @@ class DappRegistory {
     });
     }
 
-    updateDapp = function(req: Request, res: Response, body: DAppInterface) {
+    updateDapp = function(req: Request, res: Response) {
+      const body:Dapp =req.body;
         DappRegistoryService.updateDapp(body)
     .then(function (response: any) {
       utils.writeJson(res, response);
@@ -44,7 +48,9 @@ class DappRegistory {
     });
     }
 
-    deleteDapp = function(req: Request, res: Response, email:string, dappId:string) {
+    deleteDapp = function(req: Request, res: Response) {
+      const email:string = req.params.email;
+      const dappId:string = req.params.dappId;
         DappRegistoryService.deleteDapp(email, dappId)
     .then(function (response: any) {
       utils.writeJson(res, response);

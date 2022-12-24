@@ -1,5 +1,4 @@
-import {DAppInterface} from '../types/dappInterface';
-
+import {Dapp} from '@merokudao/dapp-store-registry';
 /**
  * For listing new Dapp to the store
  * lists the new dapp to the store
@@ -7,7 +6,7 @@ import {DAppInterface} from '../types/dappInterface';
  * body Dapp Send the request with dapp schema parameters
  * returns Dapp
  **/
-exports.addDapp = function(body:DAppInterface) {
+exports.addDapp = function(body:Dapp) {
   return new Promise<void>(function(resolve, reject) {
     var examples:any = {};
     examples['application/json'] = {
@@ -262,7 +261,7 @@ exports.getFeaturedDapps = function() {
  * body Dapp Send the request with the updated parameters
  * returns Dapp
  **/
-exports.updateDapp = function(body:DAppInterface) {
+exports.updateDapp = function(body:Dapp) {
   return new Promise<void>(function(resolve, reject) {
     var examples:any = {};
     examples['application/json'] = {

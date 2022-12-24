@@ -1,4 +1,4 @@
-import { Router, Request, Response, NextFunction } from 'express';
+import { Request, Response } from 'express';
 var utils = require('../utils/writer.js');
 var StoreRegistoryService = require('../service/StoreRegistoryService');
 
