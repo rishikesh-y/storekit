@@ -76,15 +76,6 @@ class DappRegistory {
         filterOpts.developer.githubID = <string>req.query.developer;
       }
 
-      console.log(
-        "queryText:",
-        req.params.search,
-        "query:",
-        req.query,
-        "filterOpts:",
-        filterOpts
-      );
-
       const response: DAppSchema[] = DappStore.search(
         req.params.search,
         filterOpts
@@ -140,12 +131,12 @@ class DappRegistory {
   };
 
   deleteDapp = async (req: Request, res: Response) => {
-    const name: string = req.params.name;
-    const email: string = req.params.email;
-    const accessToken: string = req.params.accessToken;
-    const githubID: string = req.params.githubID;
-    const dappId: string = req.params.dappId;
-    const org: string = req.params.org;
+    const name: string = req.body.name;
+    const email: string = req.body.email;
+    const accessToken: string = req.body.accessToken;
+    const githubID: string = req.body.githubID;
+    const dappId: string = req.body.dappId;
+    const org: string = req.body.org;
 
     try {
       await DappStore.init();
