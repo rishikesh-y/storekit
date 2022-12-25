@@ -6,7 +6,7 @@ const routes = Router();
 
 // READ
 routes.get("/dapp/:search", DappRegistoryController.getDapps);
-routes.get("/dapp/featured", DappRegistoryController.getFeaturedDapps);
+routes.get("/store/featured", StoreRegistoryController.getFeaturedDapps);
 routes.get("/dapp/title", StoreRegistoryController.getStoreTitle);
 
 // CREATE

@@ -7,12 +7,23 @@ const DappStore = new DappStoreRegistry();
 class StoreRegistory {
   constructor() {
     this.getStoreTitle = this.getStoreTitle.bind(this);
+    this.getFeaturedDapps = this.getFeaturedDapps.bind(this);
   }
 
   getStoreTitle = async (req: Request, res: Response) => {
     try {
       await DappStore.init();
       const response = DappStore.getRegistryTitle();
+      utils.writeJson(res, response);
+    } catch (e) {
+      utils.writeJson(res, e);
+    }
+  };
+
+  getFeaturedDapps = async (req: Request, res: Response) => {
+    try {
+      await DappStore.init();
+      const response = DappStore.getFeaturedDapps();
       utils.writeJson(res, response);
     } catch (e) {
       utils.writeJson(res, e);

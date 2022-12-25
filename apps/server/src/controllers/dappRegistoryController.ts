@@ -12,7 +12,6 @@ class DappRegistory {
     this.addDapp = this.addDapp.bind(this);
     this.updateDapp = this.updateDapp.bind(this);
     this.deleteDapp = this.deleteDapp.bind(this);
-    this.getFeaturedDapps = this.getFeaturedDapps.bind(this);
   }
 
   getDapps = async (req: Request, res: Response) => {
@@ -148,16 +147,6 @@ class DappRegistory {
         dappId,
         org
       );
-      utils.writeJson(res, response);
-    } catch (e) {
-      utils.writeJson(res, e);
-    }
-  };
-
-  getFeaturedDapps = async (req: Request, res: Response) => {
-    try {
-      await DappStore.init();
-      const response = DappStore.getFeaturedDapps();
       utils.writeJson(res, response);
     } catch (e) {
       utils.writeJson(res, e);
