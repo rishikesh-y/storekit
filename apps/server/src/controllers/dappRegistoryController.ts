@@ -16,12 +16,26 @@ class DappRegistory {
   }
 
   getDapps = async (req: Request, res: Response) => {
-    const query = req.params.query;
-    const search: FilterOptions = req.query;
-
+    const querytText: string = req.params.search;
+    console.log(req.params.search, req.query);
     await DappStore.init();
     try {
-      const response: DAppSchema[] = DappStore.search(query, search);
+      let filterOpts: FilterOptions = {};
+
+      if (req.query.isMatureContent) {
+        filterOpts.forMatureAudience = true;
+      } else {
+        filterOpts.forMatureAudience = false;
+      }
+
+      if (req.params.minAge) {
+        filterOpts.minAge = 18;
+      }
+
+      const response: DAppSchema[] = DappStore.search(
+        req.params.search,
+        filterOpts
+      );
       utils.writeJson(res, response);
     } catch (e) {
       utils.writeJson(res, e);
