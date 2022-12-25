@@ -16,21 +16,74 @@ class DappRegistory {
   }
 
   getDapps = async (req: Request, res: Response) => {
-    const querytText: string = req.params.search;
-    console.log(req.params.search, req.query);
     await DappStore.init();
-    try {
-      let filterOpts: FilterOptions = {};
+    var filterOpts: FilterOptions = {};
 
+    console.log(req.query.minAge);
+    try {
       if (req.query.isMatureContent) {
         filterOpts.forMatureAudience = true;
-      } else {
-        filterOpts.forMatureAudience = false;
       }
 
-      if (req.params.minAge) {
-        filterOpts.minAge = 18;
+      if (req.query.minAge) {
+        const minAge = <string>req.query.minAge;
+        filterOpts.minAge = parseInt(minAge);
       }
+
+      if (req.query.chainId) {
+        filterOpts.chainId = parseInt(<string>req.query.chainId);
+      }
+
+      if (req.query.language) {
+        filterOpts.language = <string>req.params.language;
+      }
+
+      if (req.query.availableOnPlatform) {
+        let tmp = <string>req.query.availableOnPlatform;
+        filterOpts.availableOnPlatform = tmp.split(",");
+      }
+
+      if (req.query.listedOnOrAfter) {
+        filterOpts.listedOnOrAfter = new Date(
+          <string>req.query.listedOnOrAfter
+        );
+      }
+
+      if (req.query.listedOnOrBefore) {
+        filterOpts.listedOnOrBefore = new Date(<string>req.query.minAge);
+      }
+
+      if (req.query.allowedInCountries) {
+        let tmp = <string>req.query.allowedInCountries;
+        filterOpts.allowedInCountries = tmp.split(",");
+      }
+
+      if (req.query.blockedInCountries) {
+        let tmp = <string>req.query.blockedInCountries;
+        filterOpts.blockedInCountries = tmp.split(",");
+      }
+
+      if (req.query.categories) {
+        let tmp = <string>req.query.categories;
+        filterOpts.categories = tmp.split(",");
+      }
+
+      if (req.query.isListed) {
+        filterOpts.isListed = true;
+      }
+
+      if (req.query.developer) {
+        filterOpts.developer.githubID = <string>req.query.developer;
+      }
+
+      console.log(
+        "queryText:",
+        req.params.search,
+        "query:",
+        req.query,
+        "filterOpts:",
+        filterOpts
+      );
 
       const response: DAppSchema[] = DappStore.search(
         req.params.search,
