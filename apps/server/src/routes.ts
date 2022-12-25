@@ -7,7 +7,7 @@ const routes = Router();
 // READ
 routes.get("/dapp/:search", DappRegistoryController.getDapps);
 routes.get("/store/featured", StoreRegistoryController.getFeaturedDapps);
-routes.get("/dapp/title", StoreRegistoryController.getStoreTitle);
+routes.get("/store/title", StoreRegistoryController.getStoreTitle);
 
 // CREATE
 routes.post("/dapp", DappRegistoryController.addDapp);
@@ -16,6 +16,6 @@ routes.post("/dapp", DappRegistoryController.addDapp);
 routes.put("/dapp", DappRegistoryController.updateDapp);
 
 // DELETE
-routes.delete("/dapp", DappRegistoryController.deleteDapp);
+routes.delete("/dapp/:dappId/:name/:email/:accessToken/:githubId/:org", DappRegistoryController.deleteDapp);
 
 export default routes;

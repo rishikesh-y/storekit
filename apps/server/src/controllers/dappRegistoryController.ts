@@ -16,7 +16,7 @@ class DappRegistory {
 
   getDapps = async (req: Request, res: Response) => {
     await DappStore.init();
-    var filterOpts: FilterOptions = {};
+    var filterOpts: FilterOptions = { isListed: true };
 
     console.log(req.query.minAge);
     try {
@@ -130,12 +130,12 @@ class DappRegistory {
   };
 
   deleteDapp = async (req: Request, res: Response) => {
-    const name: string = req.body.name;
-    const email: string = req.body.email;
-    const accessToken: string = req.body.accessToken;
-    const githubID: string = req.body.githubID;
-    const dappId: string = req.body.dappId;
-    const org: string = req.body.org;
+    const name: string = req.params.name;
+    const email: string = req.params.email;
+    const accessToken: string = req.params.accessToken;
+    const githubID: string = req.params.githubID;
+    const dappId: string = req.params.dappId;
+    const org: string = req.params.org;
 
     try {
       await DappStore.init();
