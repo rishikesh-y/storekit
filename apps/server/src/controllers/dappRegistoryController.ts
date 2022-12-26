@@ -27,21 +27,24 @@ class DappRegistory {
       }
 
       if (req.query.minAge) {
-        var age: number;
         try {
+          var age: number;
           let minAge = <string>req.query.minAge;
           age = parseInt(minAge);
+          if (Number(age)) filterOpts.minAge = age;
         } catch (e) {
-          return console.error(e);
+          console.error(e);
         }
-        filterOpts.minAge = age;
       }
+
+      console.log(filterOpts.minAge);
 
       if (req.query.chainId) {
         try {
-          filterOpts.chainId = parseInt(<string>req.query.chainId);
+          var chainId = parseInt(<string>req.query.chainId);
+          if (Number(chainId)) filterOpts.chainId = chainId;
         } catch (e) {
-          return console.error(e);
+          console.error(e);
         }
       }
 
@@ -51,8 +54,8 @@ class DappRegistory {
 
       if (req.query.availableOnPlatform) {
         let tmp = <string>req.query.availableOnPlatform;
-        tmp = tmp.trim();
-        filterOpts.availableOnPlatform = tmp.split(",");
+        let arr: string[] = tmp.split(",").map((item: string) => item.trim());
+        filterOpts.availableOnPlatform = arr;
       }
 
       if (req.query.listedOnOrAfter) {
@@ -61,7 +64,7 @@ class DappRegistory {
             <string>req.query.listedOnOrAfter
           );
         } catch (e) {
-          return console.error(e);
+          console.error(e);
         }
       }
 
@@ -69,26 +72,26 @@ class DappRegistory {
         try {
           filterOpts.listedOnOrBefore = parseISO(<string>req.query.minAge);
         } catch (e) {
-          return console.error(e);
+          console.error(e);
         }
       }
 
       if (req.query.allowedInCountries) {
         let tmp = <string>req.query.allowedInCountries;
-        tmp = tmp.trim();
-        filterOpts.allowedInCountries = tmp.split(",");
+        let arr: string[] = tmp.split(",").map((item: string) => item.trim());
+        filterOpts.allowedInCountries = arr;
       }
 
       if (req.query.blockedInCountries) {
         let tmp = <string>req.query.blockedInCountries;
-        tmp = tmp.trim();
-        filterOpts.blockedInCountries = tmp.split(",");
+        let arr: string[] = tmp.split(",").map((item: string) => item.trim());
+        filterOpts.blockedInCountries = arr;
       }
 
       if (req.query.categories) {
         let tmp = <string>req.query.categories;
-        tmp = tmp.trim();
-        filterOpts.categories = tmp.split(",");
+        let arr: string[] = tmp.split(",").map((item: string) => item.trim());
+        filterOpts.categories = arr;
       }
 
       if (req.query.isListed) {
