@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { DAppSchema, FilterOptions } from "@merokudao/dapp-store-registry";
 import { DappStoreRegistry } from "@merokudao/dapp-store-registry";
+import parseISO from "date-fns/parseISO";
 
 var utils = require("../utils/writer.js");
 
@@ -16,21 +17,32 @@ class DappRegistory {
 
   getDapps = async (req: Request, res: Response) => {
     await DappStore.init();
+    var search: string = <string>req.query.search;
     var filterOpts: FilterOptions = { isListed: true };
 
-    console.log(req.query.minAge);
     try {
       if (req.query.isMatureContent) {
-        filterOpts.forMatureAudience = true;
+        filterOpts.forMatureAudience =
+          req.query.isMatureContent === "true" ? true : false;
       }
 
       if (req.query.minAge) {
-        const minAge = <string>req.query.minAge;
-        filterOpts.minAge = parseInt(minAge);
+        var age: number;
+        try {
+          let minAge = <string>req.query.minAge;
+          age = parseInt(minAge);
+        } catch (e) {
+          return console.error(e);
+        }
+        filterOpts.minAge = age;
       }
 
       if (req.query.chainId) {
-        filterOpts.chainId = parseInt(<string>req.query.chainId);
+        try {
+          filterOpts.chainId = parseInt(<string>req.query.chainId);
+        } catch (e) {
+          return console.error(e);
+        }
       }
 
       if (req.query.language) {
@@ -39,47 +51,63 @@ class DappRegistory {
 
       if (req.query.availableOnPlatform) {
         let tmp = <string>req.query.availableOnPlatform;
+        tmp = tmp.trim();
         filterOpts.availableOnPlatform = tmp.split(",");
       }
 
       if (req.query.listedOnOrAfter) {
-        filterOpts.listedOnOrAfter = new Date(
-          <string>req.query.listedOnOrAfter
-        );
+        try {
+          filterOpts.listedOnOrAfter = parseISO(
+            <string>req.query.listedOnOrAfter
+          );
+        } catch (e) {
+          return console.error(e);
+        }
       }
 
       if (req.query.listedOnOrBefore) {
-        filterOpts.listedOnOrBefore = new Date(<string>req.query.minAge);
+        try {
+          filterOpts.listedOnOrBefore = parseISO(<string>req.query.minAge);
+        } catch (e) {
+          return console.error(e);
+        }
       }
 
       if (req.query.allowedInCountries) {
         let tmp = <string>req.query.allowedInCountries;
+        tmp = tmp.trim();
         filterOpts.allowedInCountries = tmp.split(",");
       }
 
       if (req.query.blockedInCountries) {
         let tmp = <string>req.query.blockedInCountries;
+        tmp = tmp.trim();
         filterOpts.blockedInCountries = tmp.split(",");
       }
 
       if (req.query.categories) {
         let tmp = <string>req.query.categories;
+        tmp = tmp.trim();
         filterOpts.categories = tmp.split(",");
       }
 
       if (req.query.isListed) {
-        filterOpts.isListed = true;
+        filterOpts.isListed = req.query.isListed === "true" ? true : false;
       }
 
       if (req.query.developer) {
-        filterOpts.developer.githubID = <string>req.query.developer;
+        let tmp = <string>req.query.developer;
+        tmp = tmp.trim();
+        filterOpts.developer.githubID = tmp;
       }
 
-      const response: DAppSchema[] = DappStore.search(
-        req.params.search,
-        filterOpts
-      );
-      utils.writeJson(res, response);
+      if (search == undefined) {
+        const response: DAppSchema[] = await DappStore.dApps(filterOpts);
+        utils.writeJson(res, response);
+      } else {
+        const response: DAppSchema[] = DappStore.search(search, filterOpts);
+        utils.writeJson(res, response);
+      }
     } catch (e) {
       utils.writeJson(res, e);
     }

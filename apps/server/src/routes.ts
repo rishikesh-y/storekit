@@ -5,7 +5,7 @@ import StoreRegistoryController from "./controllers/storeRegistoryController";
 const routes = Router();
 
 // READ
-routes.get("/dapp/:search", DappRegistoryController.getDapps);
+routes.get("/dapp", DappRegistoryController.getDapps);
 routes.get("/store/featured", StoreRegistoryController.getFeaturedDapps);
 routes.get("/store/title", StoreRegistoryController.getStoreTitle);
 

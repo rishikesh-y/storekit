@@ -1,0 +1,448 @@
+openapi: 3.0.3
+info:
+  title: Meroku dapp store
+  version: "1.2"
+  description: "Open API specs for Meroku Dapp store."
+  contact:
+    email: hardik.agarwal@bitpack.me
+servers:
+  - url: https://localhost:3000/api
+tags:
+  - name: Dapp Registry
+    description: Dapp registry endpoint to `get`, `create`, `update`, `delete` dapp in meroku store and `get` registry title
+  - name: Store Registry
+    description: Meroku store registory to `get` the store title
+paths:
+  /dapp:
+    delete:
+      tags:
+        - Dapp Registry
+      summary: Delete dApp
+      description: Removes the dapp from the store
+      operationId: deleteDapp
+      parameters:
+        - name: dapp details
+          in: query
+          description: dAppWithDevcCreds schema details
+          required: true
+          schema:
+            $ref: "#/components/schemas/DappWithDevCreds"
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: string
+        "405":
+          description: Invalid input
+    put:
+      tags:
+        - Dapp Registry
+      summary: Update dApp
+      description: For updating the exisitng dapp
+      operationId: updateDapp
+      requestBody:
+        description: Send the request with the updated parameters
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/DappWithDevCreds"
+        required: true
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: string
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: Dapp not found
+        "405":
+          description: Validation exception
+    post:
+      tags:
+        - Dapp Registry
+      summary: Add dApp
+      description: adding new dapp to the store
+      operationId: addDapp
+      requestBody:
+        description: Send the request with dapp schema parameters
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/Dapp"
+        required: true
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: string
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: Dapp not found
+        "405":
+          description: Validation exception
+    get:
+      tags:
+        - Dapp Registry
+      summary: Get dApp
+      description: User can search dapp by input string along with choosing either one or more filter options
+      operationId: getDapps
+      parameters:
+        - in: query
+          name: search
+          description: Dapp name
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: isListed
+          required: false
+          schema:
+            type: boolean
+          description: DApp is listed or not
+        - in: query
+          name: chainId
+          required: false
+          schema:
+            type: integer
+          description: DApp supported chainId's
+        - in: query
+          name: language
+          required: false
+          schema:
+            type: string
+          description: DApp language support
+        - in: query
+          name: availableOnPlatform
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - ios
+                - web
+                - android
+              xml:
+                name: platform name
+          description: DApp is listed or not
+        - in: query
+          name: matureForAudience
+          required: false
+          schema:
+            type: boolean
+          description: ""
+        - in: query
+          name: minAge
+          required: false
+          schema:
+            type: integer
+          description: Minimum age
+        - in: query
+          name: listedOnOrAfter
+          required: false
+          schema:
+            type: string
+            format: date
+          description: ""
+        - in: query
+          name: listedOnOrBefore
+          required: false
+          schema:
+            type: string
+            format: date
+          description: ""
+        - in: query
+          name: allowedInCountries
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+              xml:
+                name: allowedCountry
+          description: dApp allowed countries
+        - in: query
+          name: blockedInCountries
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+              xml:
+                name: blockedCountry
+          description: dApp blocked countries
+        - in: query
+          name: categories
+          required: false
+          schema:
+            type: array
+            items:
+              type: array
+              items:
+                type: string
+                enum:
+                  - books
+                  - business
+                  - developer tools
+                  - education
+                  - entertainment
+                  - finance
+                  - food and drink
+                  - games
+                  - graphics and design
+                  - health and fitness
+                  - lifestyle
+                  - kids
+                  - magazines and newspapers
+                  - medical
+                  - music
+                  - navigation
+                  - news
+                  - photo and video
+                  - productivity
+                  - reference
+                  - shopping
+                  - social networking
+                  - sports
+                  - travel
+                  - utilities
+                  - weather
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Dapp"
+        "400":
+          description: Invalid status value
+  /store/featured:
+    get:
+      tags:
+        - Dapp Registry
+      summary: Featured dApps
+      description: For finding featured dApps
+      operationId: getFeaturedDapps
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Dapp"
+        "400":
+          description: Invalid status value
+  /store/title/:
+    get:
+      tags:
+        - Store Registry
+      summary: Registry title
+      description: Returns the store title
+      operationId: getStoreTitle
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: string
+        "400":
+          description: Invalid status value
+components:
+  schemas:
+    DappWithDevCreds:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        accessToken:
+          type: string
+        githubID:
+          type: string
+        dapp:
+          $ref: "#/components/schemas/Dapp"
+        org:
+          type: string
+    FeaturedSection:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        key:
+          type: string
+        dappIds:
+          type: array
+          items:
+            type: string
+            xml:
+              name: dappId
+    Registory:
+      type: object
+      properties:
+        title:
+          type: string
+          example: meroku store
+        chains:
+          type: array
+          example: [1, 80001]
+          items:
+            type: integer
+            xml:
+              name: chain
+        dapps:
+          type: array
+          items:
+            $ref: "#/components/schemas/Dapp"
+        featuredSections:
+          type: array
+          items:
+            $ref: "#/components/schemas/FeaturedSection"
+    Dapp:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Dapp Name
+        description:
+          type: string
+          example: Description of Dapp
+        images:
+          type: object
+          properties:
+            logo:
+              type: string
+              format: binary
+            banner:
+              type: string
+              format: binary
+            screenshots:
+              type: array
+              items:
+                type: string
+                format: binary
+                xml:
+                  name: screenshot
+        repoUrl:
+          type: string
+          format: uri
+        dappId:
+          type: string
+        minAge:
+          type: integer
+        isMatureForAudience:
+          type: boolean
+        isSelfModerated:
+          type: boolean
+        language:
+          type: string
+        version:
+          type: string
+        isListed:
+          type: boolean
+        listDate:
+          type: string
+          format: date
+        availableOnPlatform:
+          type: array
+          items:
+            type: string
+            enum:
+              - ios
+              - web
+              - android
+            xml:
+              name: platform name
+        geoRestrictions:
+          type: object
+          properties:
+            allowedCountries:
+              type: array
+              items:
+                type: string
+                xml:
+                  name: item
+            blockedCountries:
+              type: array
+              items:
+                type: string
+                xml:
+                  name: item
+        developer:
+          type: object
+          properties:
+            legalName:
+              type: string
+            logo:
+              type: string
+            website:
+              type: string
+            privacyPolicyUrl:
+              type: string
+            support:
+              type: object
+              properties:
+                url:
+                  type: string
+                  format: uri
+                email:
+                  type: string
+                  format: email
+            githubId:
+              type: string
+        tags:
+          type: array
+          items:
+            type: string
+            xml:
+              name: tag
+        chains:
+          type: array
+          items:
+            type: integer
+            xml:
+              name: chain id
+        category:
+          type: string
+          enum:
+            - books
+            - business
+            - developer tools
+            - education
+            - entertainment
+            - finance
+            - food and drink
+            - games
+            - graphics and design
+            - health and fitness
+            - lifestyle
+            - kids
+            - magazines and newspapers
+            - medical
+            - music
+            - navigation
+            - news
+            - photo and video
+            - productivity
+            - reference
+            - shopping
+            - social networking
+            - sports
+            - travel
+            - utilities
+            - weather
