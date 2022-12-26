@@ -22,7 +22,15 @@ routes.post(
 );
 
 // UPDATE
-routes.put("/dapp", DappRegistoryController.updateDapp);
+routes.put(
+  "/dapp",
+  body("name").isString().not().isEmpty(),
+  body("email").isString().not().isEmpty(),
+  body("accessToken").isString().not().isEmpty(),
+  body("githubID").isString().not().isEmpty(),
+  body("dapp").not().isEmpty(),
+  DappRegistoryController.updateDapp
+);
 
 // DELETE
 routes.delete("/dapp", DappRegistoryController.deleteDapp);

@@ -2,8 +2,10 @@ import { Request, Response } from "express";
 import { DAppSchema, FilterOptions } from "@merokudao/dapp-store-registry";
 import { DappStoreRegistry } from "@merokudao/dapp-store-registry";
 import { validationResult } from "express-validator";
+import Debug from "debug";
 import parseISO from "date-fns/parseISO";
 
+const debug = Debug("meroku:server");
 var utils = require("../utils/writer.js");
 const DappStore = new DappStoreRegistry();
 
@@ -33,7 +35,7 @@ class DappRegistory {
           age = parseInt(minAge);
           if (Number(age)) filterOpts.minAge = age;
         } catch (e) {
-          console.error(e);
+          debug(e.message);
         }
       }
 
@@ -44,7 +46,7 @@ class DappRegistory {
           var chainId = parseInt(<string>req.query.chainId);
           if (Number(chainId)) filterOpts.chainId = chainId;
         } catch (e) {
-          console.error(e);
+          debug(e.message);
         }
       }
 
@@ -64,7 +66,7 @@ class DappRegistory {
             <string>req.query.listedOnOrAfter
           );
         } catch (e) {
-          console.error(e);
+          debug(e.message);
         }
       }
 
@@ -72,7 +74,7 @@ class DappRegistory {
         try {
           filterOpts.listedOnOrBefore = parseISO(<string>req.query.minAge);
         } catch (e) {
-          console.error(e);
+          debug(e.message);
         }
       }
 
@@ -104,7 +106,7 @@ class DappRegistory {
         filterOpts.developer.githubID = tmp;
       }
 
-      if (search == undefined) {
+      if (search && search.trim() !== "") {
         const response: DAppSchema[] = await DappStore.dApps(filterOpts);
         utils.writeJson(res, response);
       } else {
@@ -142,30 +144,39 @@ class DappRegistory {
       }
     } else {
       // errors
-      console.log(`Validation errors: ${result}`);
+      debug(`Validation errors: ${result}`);
       utils.writeJson(res, "Validation errors");
     }
   };
 
   updateDapp = async (req: Request, res: Response) => {
-    const name: string = req.body.name;
-    const email: string = req.body.email;
-    const accessToken: string = req.body.accessToken;
-    const githubID: string = req.body.githubID;
-    const dapp: DAppSchema = req.body.dapp;
-    const org: string = req.body.org;
-    try {
-      const response = DappStore.addOrUpdateDapp(
-        name,
-        email,
-        accessToken,
-        githubID,
-        dapp,
-        org
-      );
-      utils.writeJson(res, response);
-    } catch (e) {
-      utils.writeJson(res, e);
+    const result = validationResult(req);
+    if (result.isEmpty()) {
+      // no errors
+      const name: string = req.body.name;
+      const email: string = req.body.email;
+      const accessToken: string = req.body.accessToken;
+      const githubID: string = req.body.githubID;
+      const dapp: DAppSchema = req.body.dapp;
+      const org: string = req.body.org;
+
+      try {
+        const response = DappStore.addOrUpdateDapp(
+          name,
+          email,
+          accessToken,
+          githubID,
+          dapp,
+          org
+        );
+        utils.writeJson(res, response);
+      } catch (e) {
+        utils.writeJson(res, e);
+      }
+    } else {
+      // errors
+      debug(`Validation errors: ${result}`);
+      utils.writeJson(res, "Validation errors");
     }
   };
 
