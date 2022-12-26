@@ -130,12 +130,12 @@ class DappRegistory {
   };
 
   deleteDapp = async (req: Request, res: Response) => {
-    const name: string = req.params.name;
-    const email: string = req.params.email;
-    const accessToken: string = req.params.accessToken;
-    const githubID: string = req.params.githubID;
-    const dappId: string = req.params.dappId;
-    const org: string = req.params.org;
+    const name: string = <string>req.query.name;
+    const email: string = <string>req.query.email;
+    const accessToken: string = <string>req.query.accessToken;
+    const githubID: string = <string>req.query.githubID;
+    const dappId: string = <string>req.query.dappId;
+    const org: string = <string>req.query.org;
 
     try {
       await DappStore.init();

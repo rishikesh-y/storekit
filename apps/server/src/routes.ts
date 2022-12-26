@@ -16,6 +16,6 @@ routes.post("/dapp", DappRegistoryController.addDapp);
 routes.put("/dapp", DappRegistoryController.updateDapp);
 
 // DELETE
-routes.delete("/dapp/:dappId/:name/:email/:accessToken/:githubId/:org", DappRegistoryController.deleteDapp);
+routes.delete("/dapp", DappRegistoryController.deleteDapp);
 
 export default routes;
