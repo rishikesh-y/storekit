@@ -114,7 +114,7 @@ class DappRegistory {
         utils.writeJson(res, response);
       }
     } catch (e) {
-      utils.writeJson(res, e);
+      utils.writeJson(res, e, 400);
     }
   };
 
@@ -140,12 +140,12 @@ class DappRegistory {
         );
         utils.writeJson(res, response);
       } catch (e) {
-        utils.writeJson(res, e);
+        utils.writeJson(res, e, 400);
       }
     } else {
       // errors
       debug(`Validation errors: ${result}`);
-      utils.writeJson(res, "Validation errors");
+      utils.writeJson(res, "Validation errors", 400);
     }
   };
 
@@ -171,12 +171,12 @@ class DappRegistory {
         );
         utils.writeJson(res, response);
       } catch (e) {
-        utils.writeJson(res, e);
+        utils.writeJson(res, e, 400);
       }
     } else {
       // errors
       debug(`Validation errors: ${result}`);
-      utils.writeJson(res, "Validation errors");
+      utils.writeJson(res, "Validation errors", 400);
     }
   };
 
@@ -200,7 +200,7 @@ class DappRegistory {
       );
       utils.writeJson(res, response);
     } catch (e) {
-      utils.writeJson(res, e);
+      utils.writeJson(res, e, 400);
     }
   };
 }

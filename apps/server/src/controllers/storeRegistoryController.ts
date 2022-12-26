@@ -16,7 +16,7 @@ class StoreRegistory {
       const response = DappStore.getRegistryTitle();
       utils.writeJson(res, response);
     } catch (e) {
-      utils.writeJson(res, e);
+      utils.writeJson(res, e, 400);
     }
   };
 
@@ -26,7 +26,7 @@ class StoreRegistory {
       const response = DappStore.getFeaturedDapps();
       utils.writeJson(res, response);
     } catch (e) {
-      utils.writeJson(res, e);
+      utils.writeJson(res, e, 400);
     }
   };
 }
