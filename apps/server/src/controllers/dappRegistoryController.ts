@@ -107,10 +107,10 @@ class DappRegistory {
       }
 
       if (search && search.trim() !== "") {
-        const response: DAppSchema[] = await DappStore.dApps(filterOpts);
+        const response: DAppSchema[] = DappStore.search(search, filterOpts);
         utils.writeJson(res, response);
       } else {
-        const response: DAppSchema[] = DappStore.search(search, filterOpts);
+        const response: DAppSchema[] = await DappStore.dApps(filterOpts);
         utils.writeJson(res, response);
       }
     } catch (e) {
@@ -181,26 +181,34 @@ class DappRegistory {
   };
 
   deleteDapp = async (req: Request, res: Response) => {
-    const name: string = <string>req.query.name;
-    const email: string = <string>req.query.email;
-    const accessToken: string = <string>req.query.accessToken;
-    const githubID: string = <string>req.query.githubID;
-    const dappId: string = <string>req.query.dappId;
-    const org: string = <string>req.query.org;
+    const result = validationResult(req);
+    if (result.isEmpty()) {
+      // no errors
+      const name: string = <string>req.body.name;
+      const email: string = <string>req.body.email;
+      const accessToken: string = <string>req.body.accessToken;
+      const githubID: string = <string>req.body.githubID;
+      const dappId: string = <string>req.body.dappId;
+      const org: string = <string>req.body.org;
 
-    try {
-      await DappStore.init();
-      const response = DappStore.deleteDapp(
-        name,
-        email,
-        accessToken,
-        githubID,
-        dappId,
-        org
-      );
-      utils.writeJson(res, response);
-    } catch (e) {
-      utils.writeJson(res, e, 400);
+      try {
+        await DappStore.init();
+        const response = DappStore.deleteDapp(
+          name,
+          email,
+          accessToken,
+          githubID,
+          dappId,
+          org
+        );
+        utils.writeJson(res, response);
+      } catch (e) {
+        utils.writeJson(res, e, 400);
+      }
+    } else {
+      // errors
+      debug(`Validation errors: ${result}`);
+      utils.writeJson(res, "Validation errors", 400);
     }
   };
 }

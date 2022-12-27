@@ -33,6 +33,14 @@ routes.put(
 );
 
 // DELETE
-routes.delete("/dapp", DappRegistoryController.deleteDapp);
+routes.post(
+  "/dapp/deletedApp",
+  body("name").isString().not().isEmpty(),
+  body("email").isString().not().isEmpty(),
+  body("accessToken").isString().not().isEmpty(),
+  body("githubID").isString().not().isEmpty(),
+  body("dappId").isString().not().isEmpty(),
+  DappRegistoryController.deleteDapp
+);
 
 export default routes;

@@ -14,28 +14,6 @@ tags:
     description: Meroku store registory to `get` the store title
 paths:
   /dapp:
-    delete:
-      tags:
-        - Dapp Registry
-      summary: Delete dApp
-      description: Removes the dapp from the store
-      operationId: deleteDapp
-      parameters:
-        - name: dapp details
-          in: query
-          description: dAppWithDevcCreds schema details
-          required: true
-          schema:
-            $ref: "#/components/schemas/DappWithDevCreds"
-      responses:
-        "200":
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                type: string
-        "405":
-          description: Invalid input
     put:
       tags:
         - Dapp Registry
@@ -98,7 +76,7 @@ paths:
         - in: query
           name: search
           description: Dapp name
-          required: true
+          required: false
           schema:
             type: string
         - in: query
@@ -226,10 +204,33 @@ paths:
                   $ref: "#/components/schemas/Dapp"
         "400":
           description: Invalid status value
+  /dapp/deleteApp:
+    post:
+      tags:
+        - Dapp Registry
+      summary: Delete dApp
+      description: Removes the dapp from the store
+      operationId: deleteDapp
+      requestBody:
+        description: Send the request with dapp parameters
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/DappIdWithDevCreds"
+        required: true
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: string
+        "405":
+          description: Invalid input
   /store/featured:
     get:
       tags:
-        - Dapp Registry
+        - Store Registry
       summary: Featured dApps
       description: For finding featured dApps
       operationId: getFeaturedDapps
@@ -262,6 +263,27 @@ paths:
           description: Invalid status value
 components:
   schemas:
+    DappIdWithDevCreds:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        accessToken:
+          type: string
+        githubID:
+          type: string
+        dappId:
+          type: integer
+        org:
+          type: string
+      required:
+        - name
+        - email
+        - accessToken
+        - githubID
+        - dappId
     DappWithDevCreds:
       type: object
       properties:
@@ -277,6 +299,12 @@ components:
           $ref: "#/components/schemas/Dapp"
         org:
           type: string
+      required:
+        - name
+        - email
+        - accessToken
+        - githubID
+        - dapp
     FeaturedSection:
       type: object
       properties:
@@ -292,6 +320,11 @@ components:
             type: string
             xml:
               name: dappId
+      required:
+        - title
+        - description
+        - key
+        - dappIds
     Registory:
       type: object
       properties:
@@ -313,6 +346,10 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/FeaturedSection"
+      required:
+        - title
+        - chains
+        - dapps
     Dapp:
       type: object
       properties:
@@ -446,3 +483,19 @@ components:
             - travel
             - utilities
             - weather
+      required:
+        - name
+        - description
+        - dappId
+        - minAge
+        - isForMatureAudience
+        - isSelfModerated
+        - language
+        - version
+        - availableOnPlatform
+        - developer
+        - tags
+        - chains
+        - listDate
+        - isListed
+        - category
