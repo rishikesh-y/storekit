@@ -1,0 +1,548 @@
+openapi: 3.0.3
+info:
+  title: Meroku dapp store
+  version: "1.2"
+  description: "Open API specs for Meroku Dapp store."
+  contact:
+    email: hardik.agarwal@bitpack.me
+servers:
+  - url: https://localhost:3000/api
+tags:
+  - name: Dapp Registry
+    description: Dapp registry endpoint to `get`, `create`, `update`, `delete` dapp in meroku store and `get` registry title
+  - name: Store Registry
+    description: Meroku store registory to `get` the store title
+paths:
+  /dapp:
+    put:
+      tags:
+        - Dapp Registry
+      summary: Update dApp
+      description: For updating the exisitng dapp
+      operationId: updateDapp
+      requestBody:
+        description: Send the request with the updated parameters
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/DappWithDevCreds"
+        required: true
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: string
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: Dapp not found
+        "405":
+          description: Validation exception
+    post:
+      tags:
+        - Dapp Registry
+      summary: Add dApp
+      description: adding new dapp to the store
+      operationId: addDapp
+      requestBody:
+        description: Send the request with dapp schema parameters
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/Dapp"
+        required: true
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: string
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: Dapp not found
+        "405":
+          description: Validation exception
+    get:
+      tags:
+        - Dapp Registry
+      summary: Get dApp
+      description: User can search dapp by input string along with choosing either one or more filter options
+      operationId: getDapps
+      parameters:
+        - in: query
+          name: search
+          description: Dapp name
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: isListed
+          required: false
+          schema:
+            type: boolean
+          description: DApp is listed or not
+        - in: query
+          name: chainId
+          required: false
+          schema:
+            type: integer
+          description: DApp supported chainId's
+        - in: query
+          name: language
+          required: false
+          schema:
+            type: string
+          description: DApp language support
+        - in: query
+          name: availableOnPlatform
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - ios
+                - web
+                - android
+              xml:
+                name: platform name
+          description: DApp is listed or not
+        - in: query
+          name: matureForAudience
+          required: false
+          schema:
+            type: boolean
+          description: ""
+        - in: query
+          name: minAge
+          required: false
+          schema:
+            type: integer
+          description: Minimum age
+        - in: query
+          name: listedOnOrAfter
+          required: false
+          schema:
+            type: string
+            format: date
+          description: ""
+        - in: query
+          name: listedOnOrBefore
+          required: false
+          schema:
+            type: string
+            format: date
+          description: ""
+        - in: query
+          name: allowedInCountries
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+              xml:
+                name: allowedCountry
+          description: dApp allowed countries
+        - in: query
+          name: blockedInCountries
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+              xml:
+                name: blockedCountry
+          description: dApp blocked countries
+        - in: query
+          name: categories
+          required: false
+          schema:
+            type: array
+            items:
+              type: array
+              items:
+                type: string
+                enum:
+                  - books
+                  - business
+                  - developer tools
+                  - education
+                  - entertainment
+                  - finance
+                  - food and drink
+                  - games
+                  - graphics and design
+                  - health and fitness
+                  - lifestyle
+                  - kids
+                  - magazines and newspapers
+                  - medical
+                  - music
+                  - navigation
+                  - news
+                  - photo and video
+                  - productivity
+                  - reference
+                  - shopping
+                  - social networking
+                  - sports
+                  - travel
+                  - utilities
+                  - weather
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Dapp"
+        "400":
+          description: Invalid status value
+  /dapp/deleteApp:
+    post:
+      tags:
+        - Dapp Registry
+      summary: Delete dApp
+      description: Removes the dapp from the store
+      operationId: deleteDapp
+      requestBody:
+        description: Send the request with dapp parameters
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/DappIdWithDevCreds"
+        required: true
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: string
+        "405":
+          description: Invalid input
+  /store/featured:
+    get:
+      tags:
+        - Store Registry
+      summary: Featured dApps
+      description: For finding featured dApps
+      operationId: getFeaturedDapps
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Dapp"
+        "400":
+          description: Invalid status value
+  /store/title/:
+    get:
+      tags:
+        - Store Registry
+      summary: Registry title
+      description: Returns the store title
+      operationId: getStoreTitle
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: string
+        "400":
+          description: Invalid status value
+components:
+  schemas:
+    DappIdWithDevCreds:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the developer (from GitHub)
+        email:
+          type: string
+          description: The email of the developer (from Github)
+        accessToken:
+          type: string
+          description: he JWT access token of the developer (from Github) for user to server API Calls
+        githubID:
+          type: string
+          description: The GitHub ID of the developer
+        dappId:
+          type: integer
+          description: The ID of the dApp
+        org:
+          type: string
+          description: The GitHub organization to fork the repo to.
+      required:
+        - name
+        - email
+        - accessToken
+        - githubID
+        - dappId
+    DappWithDevCreds:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the developer (from GitHub)
+        email:
+          type: string
+          description: The email of the developer (from Github)
+        accessToken:
+          type: string
+          description: he JWT access token of the developer (from Github) for user to server API Calls
+        githubID:
+          type: string
+          description: The GitHub ID of the developer
+        dapp:
+          $ref: "#/components/schemas/Dapp"
+        org:
+          type: string
+          description: The GitHub organization to fork the repo to.
+      required:
+        - name
+        - email
+        - accessToken
+        - githubID
+        - dapp
+    FeaturedSection:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Title of the Featured Section. This will be displayed on the dApp Store. It should be simple and clear.
+        description:
+          type: string
+          description: Description of the Featured Section. This will be displayed on the dApp Store. It should be simple and clear.
+        key:
+          type: string
+          description: Key of the Featured Section. This will be used to identify the Featured Section. It should be simple and clear
+        dappIds:
+          type: array
+          description: List of dApp IDs that are part of this featured section. The dApp IDs should be the same as the ones in the dApp Store's dApps list.
+          items:
+            type: string
+            xml:
+              name: dappId
+      required:
+        - title
+        - description
+        - key
+        - dappIds
+    Registory:
+      type: object
+      properties:
+        title:
+          type: string
+          example: meroku store
+          description: Title of the dApp Store
+        chains:
+          type: array
+          description: List of chains supported by the dApp. This should be chainID of an EVM powered network. Ref https://chainlist.org/
+          example: [1, 80001]
+          items:
+            type: integer
+            xml:
+              name: chain
+        dapps:
+          type: array
+          description: List of dApps
+          items:
+            $ref: "#/components/schemas/Dapp"
+        featuredSections:
+          type: array
+          description: List of featured sections
+          items:
+            $ref: "#/components/schemas/FeaturedSection"
+      required:
+        - title
+        - chains
+        - dapps
+    Dapp:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Dapp Name
+        description:
+          type: string
+          description: About dApp
+        images:
+          type: object
+          properties:
+            logo:
+              type: string
+              format: binary
+              description: A URL to the logo of the dApp. Should be square and 512x512 in PNG format
+            banner:
+              type: string
+              format: binary
+              description: A URL to the banner of the dApp. Should be 1920x1080 and in PNG format
+            screenshots:
+              type: array
+              description: A list of URLs to the screenshots of the dApp. Should be 1284 x 2778 and in PNG format
+              items:
+                type: string
+                format: binary
+                xml:
+                  name: screenshot
+        repoUrl:
+          type: string
+          format: uri
+          description: If this is in OpenSource, the URL of the repository
+        dappId:
+          type: string
+          description: A Unique ID for each dApp
+        minAge:
+          type: integer
+          description: The min age of user who should access this dApp
+        isMatureForAudience:
+          type: boolean
+          description: Boolean to signify if the dApp is for mature audience
+        isSelfModerated:
+          type: boolean
+          description: Boolean to signify if the dApp developers have a moderation in place for the content posted/generated by the dApp or it's users
+        language:
+          type: string
+          description: A string in ISO-639-1 which signifies the language of the dApp
+        version:
+          type: string
+          description: The version of the dApp that is available on the dApp store
+        isListed:
+          type: boolean
+          description: Boolean to signify if the dApp is listed on the dApp store
+        listDate:
+          type: string
+          format: date
+          description: The date on which this dApp is listed on dApp store. This date can be a future date as well. This can not be in past.
+        availableOnPlatform:
+          type: array
+          description: A string signifying if the dApp is available on which platform - web, iOS, android
+          items:
+            type: string
+            enum:
+              - ios
+              - web
+              - android
+            xml:
+              name: platform name
+        geoRestrictions:
+          type: object
+          description: A list of countries where the dApp is available or unavailable. If this is not present, the dApp is available everywhere. If this is present, then one of either allowedCountries or blockedCountries should be present. If both are present, then the dApp is available in allowedCountries and unavailable in blockedCountries. The name of countries should be in ISO-3661-1 Alpha-2 Code.
+          properties:
+            allowedCountries:
+              type: array
+              description: A list of countries where the dApp is available
+              items:
+                type: string
+                xml:
+                  name: item
+            blockedCountries:
+              type: array
+              description: A list of countries where the dApp is unavailable
+              items:
+                type: string
+                xml:
+                  name: item
+        developer:
+          type: object
+          required:
+            - legalName
+            - logo
+            - website
+            - privacyPolicyUrl
+            - support
+            - githubID
+          properties:
+            legalName:
+              type: string
+              description: Legal name of the developer or the company
+            logo:
+              type: string
+              description: A URL to the logo of the developer or the company. Should be square and 512x512 in PNG format
+            website:
+              type: string
+
+            privacyPolicyUrl:
+              type: string
+            support:
+              type: object
+              properties:
+                url:
+                  type: string
+                  format: uri
+                email:
+                  type: string
+                  format: email
+            githubId:
+              type: string
+              description: The github ID of the developer
+        tags:
+          type: array
+          items:
+            type: string
+            xml:
+              name: tag
+        chains:
+          type: array
+          items:
+            type: integer
+            xml:
+              name: chain id
+        category:
+          type: string
+          description: The category of the dApp. You can assign one category to your dApp. The category you select is particularly important for your app’s discoverability on the dApp Store. This will be the category in which the app appears when users browse the dApp Store or filter search results, and it determines placement on the dApps tab or Games
+          enum:
+            - books
+            - business
+            - developer tools
+            - education
+            - entertainment
+            - finance
+            - food and drink
+            - games
+            - graphics and design
+            - health and fitness
+            - lifestyle
+            - kids
+            - magazines and newspapers
+            - medical
+            - music
+            - navigation
+            - news
+            - photo and video
+            - productivity
+            - reference
+            - shopping
+            - social networking
+            - sports
+            - travel
+            - utilities
+            - weather
+      required:
+        - name
+        - description
+        - dappId
+        - minAge
+        - isForMatureAudience
+        - isSelfModerated
+        - language
+        - version
+        - availableOnPlatform
+        - developer
+        - tags
+        - chains
+        - listDate
+        - isListed
+        - category
