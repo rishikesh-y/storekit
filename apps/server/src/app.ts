@@ -10,6 +10,12 @@ class App {
     this.server = express();
 
     this.middlewares();
+
+    const corsOptions = {
+      origin: [ /\.meroku\.store$/]
+    }
+
+    this.server.use(cors(corsOptions));
     this.routes();
   }
 
