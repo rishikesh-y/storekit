@@ -34,7 +34,7 @@ routes.put(
 
 // DELETE
 routes.post(
-  "/dapp/deletedApp",
+  "/dapp/deleteApp",
   body("name").isString().not().isEmpty(),
   body("email").isString().not().isEmpty(),
   body("accessToken").isString().not().isEmpty(),

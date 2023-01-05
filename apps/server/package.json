@@ -6,14 +6,14 @@
   "scripts": {
     "build": "tsc --project ./",
     "clean": "rm -rf dist",
-    "start:dev": "yarn clean && DEBUG=meroku:* nodemon src/server.ts",
+    "start:dev": "yarn clean && DEBUG=meroku:*,@merokudao:* nodemon src/server.ts",
     "start:prod": "pm2-runtime start dist/server.js"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@merokudao/dapp-store-registry": "0.1.5",
+    "@merokudao/dapp-store-registry": "0.1.6",
     "@types/debug": "^4.1.7",
     "@types/express": "^4.17.15",
     "aws-sdk": "^2.1287.0",

@@ -12,7 +12,7 @@ class App {
     this.middlewares();
 
     const corsOptions = {
-      origin: [ /\.meroku\.store$/]
+      origin: [ /\.meroku\.store$/, 'http://localhost:3000']
     }
 
     this.server.use(cors(corsOptions));

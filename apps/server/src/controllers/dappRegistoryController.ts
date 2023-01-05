@@ -126,25 +126,33 @@ class DappRegistry {
       const accessToken: string = req.body.accessToken;
       const githubID: string = req.body.githubID;
       const dapp: DAppSchema = req.body.dapp;
-      const org: string = req.body.org;
+      const org: string | undefined = req.body.org;
+
+      debug(`Adding dapp: ${JSON.stringify(dapp)}`);
+      debug(`name: ${name}`);
+      debug(`email: ${email}`);
+      debug(`accessToken: ${accessToken}`);
+      debug(`githubID: ${githubID}`);
+      debug(`org: ${org}`);
 
       try {
-        const response = DappStore.addOrUpdateDapp(
+        const response = await DappStore.addOrUpdateDapp(
           name,
           email,
           accessToken,
           githubID,
-          dapp,
-          org
+          dapp
         );
+        debug(response);
         return res.json(response);
       } catch (e) {
+        debug(e);
         return res.status(400).json({ errors: [{ msg: e.message }] });
       }
     } else {
       // errors
       debug(`Validation errors: ${result}`);
-      return res.status(200).json({ errors: result.array() });
+      return res.status(400).json({ errors: result.array() });
     }
   };
 
@@ -152,24 +160,23 @@ class DappRegistry {
     const result = validationResult(req);
     if (result.isEmpty()) {
       // no errors
-      const name: string = req.body.name;
-      const email: string = req.body.email;
-      const accessToken: string = req.body.accessToken;
-      const githubID: string = req.body.githubID;
-      const dapp: DAppSchema = req.body.dapp;
-      const org: string = req.body.org;
+      const name = req.body.name as string;
+      const email = req.body.email as string;
+      const accessToken = req.body.accessToken as string;
+      const githubID = req.body.githubID as string;
+      const dapp = req.body.dapp as DAppSchema;
 
       try {
-        const response = DappStore.addOrUpdateDapp(
+        const response = await DappStore.addOrUpdateDapp(
           name,
           email,
           accessToken,
           githubID,
-          dapp,
-          org
+          dapp
         );
         return res.json(response);
       } catch (e) {
+        debug(e);
         return res.status(400).json({ errors: [{ msg: e.message }] });
       }
     } else {
@@ -192,13 +199,12 @@ class DappRegistry {
 
       try {
         await DappStore.init();
-        const response = DappStore.deleteDapp(
+        const response = await DappStore.deleteDapp(
           name,
           email,
           accessToken,
           githubID,
-          dappId,
-          org
+          dappId
         );
         return res.json(response);
       } catch (e) {

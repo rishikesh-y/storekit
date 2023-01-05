@@ -34,10 +34,10 @@ export const authOptions: AuthOptions = {
 
       if (token.profile.name) {
         session.user.name = token.profile.name;
-        session.user.username = token.profile.name;
+        session.user.username = token.profile.login;
       }
       session.user.accessToken = token.account.access_token;
-      console.log("session:: ", session);
+      // console.log("session:: ", session);
       return session;
     }
   }

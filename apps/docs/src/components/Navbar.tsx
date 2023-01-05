@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 
 import BitpackLogo from "../../public/bitpack.png";
+import { signOut } from "next-auth/react";
 
 const Navbar: React.FunctionComponent = () => {
   return (
@@ -15,6 +16,7 @@ const Navbar: React.FunctionComponent = () => {
       </Link>
       <div className="flex flex-row items-center space-x-4 text-lg font-medium">
         <Link href={"/meroku-server"}>Backend APIs</Link>
+        <button onClick={() => signOut()}>Sign out</button>
       </div>
     </nav>
   );

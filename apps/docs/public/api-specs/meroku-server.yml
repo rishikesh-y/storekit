@@ -25,11 +25,32 @@ info:
 
     The `POST`, `UPDATE`, `DELETE` calls ensure that only the dApp developer can make changes to their own dApp listing.
     This is done by sending the Github (user - server) token in these API calls. The mechanism to get the Github access
-    tokens is upto the frontend to decide. They can for example create a Github App or use a service like Auth0.
+    tokens is up to the frontend to decide. They can for example create a Github App or use a service like Auth0.
+
+
+    In this server, you will be able to see your github details on the top left. You can use those
+    details to enter values in the update calls.
+
+
+
+    **FAQs**
+
+
+    1. I am getting a `400 Resource not accessible by integration` error on update calls.
+
+      This can happen when the github token supplied does not have valid permissions. Ensure that
+      you are not sending `org` param. Right now, the fork can only happen on individual and not
+      at org level.
+
+
+
+    2. I am getting a `400 Not Found` error on update calls.
+
+      Ensure that you are passing the correct github ID or the user who wants to make the update.
 servers:
   - url: https://api-a.meroku.store
     description: Testing Server
-  - url: http://localhost:8001/api
+  - url: http://localhost:8001
     description: Development Server
 tags:
   - name: DApp Registry
@@ -50,7 +71,8 @@ paths:
       parameters:
         - in: query
           name: search
-          description: DApp name
+          description: A string to be used for search. The search happens on the `name` and
+            `tags` fields of the dApp. If this is not present, all dApps are returned.
           required: false
           schema:
             type: string
@@ -60,18 +82,21 @@ paths:
           schema:
             type: boolean
           description: DApp is listed or not
+          example: true
         - in: query
           name: chainId
           required: false
           schema:
             type: integer
-          description: DApp supported chainId's
+          description: DApp supported chainId's. Only dApps belonging to this chainID will be returned.
+          example: 137
         - in: query
           name: language
           required: false
           schema:
             type: string
-          description: DApp language support
+          description: DApp's language
+          example: en
         - in: query
           name: availableOnPlatform
           required: false
@@ -83,8 +108,6 @@ paths:
                 - ios
                 - web
                 - android
-              xml:
-                name: platform name
           description: DApp is listed or not
         - in: query
           name: matureForAudience
@@ -92,26 +115,30 @@ paths:
           schema:
             type: boolean
           description: Mentions if the app is for all ages or only mature audience
+          example: false
         - in: query
           name: minAge
           required: false
           schema:
             type: integer
           description: Minimum age
+          example: 13
         - in: query
           name: listedOnOrAfter
           required: false
           schema:
             type: string
             format: date
-          description: The date dApp was listed on or after
+          description: The date dApp was listed on or after. Date should be in ISO format.
+          example: 2021-11-13
         - in: query
           name: listedOnOrBefore
           required: false
           schema:
             type: string
             format: date
-          description: The date dApp was listed on or before
+          description: The date dApp was listed on or before. Date should be in ISO format.
+          example: 2021-11-13
         - in: query
           name: allowedInCountries
           required: false
@@ -119,8 +146,6 @@ paths:
             type: array
             items:
               type: string
-              xml:
-                name: allowedCountry
           description: dApp allowed countries
         - in: query
           name: blockedInCountries
@@ -129,12 +154,12 @@ paths:
             type: array
             items:
               type: string
-              xml:
-                name: blockedCountry
           description: dApp blocked countries
         - in: query
           name: categories
           required: false
+          description: The categories in which dApps belong. Multiple categories are
+            joined using OR operator.
           schema:
             type: array
             items:
@@ -180,22 +205,22 @@ paths:
         "400":
           description: Invalid status value
 
-    put:
+    post:
       tags:
         - DApp Registry
-      summary: Update dApp
-      description: For updating the existing dApp
-      operationId: updateDApp
+      summary: Add dApp
+      description: Adding new dApp to the store
+      operationId: addDApp
       requestBody:
-        description: Send the request with the updated parameters
+        description: Send the request with dApp schema parameters
         content:
-          application/x-www-form-urlencoded:
+          application/json:
             schema:
               $ref: "#/components/schemas/DappWithDevCreds"
         required: true
       responses:
         "200":
-          description: successful operation
+          description: Successful operation
           content:
             application/json:
               schema:
@@ -207,22 +232,22 @@ paths:
         "405":
           description: Validation exception
 
-    post:
+    put:
       tags:
         - DApp Registry
-      summary: Add dApp
-      description: Adding new dApp to the store
-      operationId: addDApp
+      summary: Update dApp
+      description: For updating the existing dApp
+      operationId: updateDApp
       requestBody:
-        description: Send the request with dApp schema parameters
+        description: Send the request with the updated parameters
         content:
-          application/x-www-form-urlencoded:
+          application/json:
             schema:
               $ref: "#/components/schemas/DappWithDevCreds"
         required: true
       responses:
         "200":
-          description: Successful operation
+          description: successful operation
           content:
             application/json:
               schema:
@@ -245,7 +270,7 @@ paths:
       requestBody:
         description: Send the request with dApp parameters
         content:
-          application/x-www-form-urlencoded:
+          application/json:
             schema:
               $ref: "#/components/schemas/DappIdWithDevCreds"
         required: true
@@ -300,18 +325,23 @@ components:
         name:
           type: string
           description: The name of the developer (from GitHub)
+          example: r488it
         email:
           type: string
           description: The email of the developer (from Github)
+          example: email@example.com
         accessToken:
           type: string
-          description: he JWT access token of the developer (from Github) for user to server API Calls
+          description: The JWT access token of the developer (from Github) for user to server API Calls
+          example: ghu_HziKDuS1L15JOAZSTMzJU2WkN2rmNe2zvV4
         githubID:
           type: string
           description: The GitHub ID of the developer
+          example: r488it
         dappId:
           type: integer
           description: The ID of the dApp
+          example: example.store.dapp
         org:
           type: string
           description: The GitHub organization to fork the repo to.
@@ -327,15 +357,19 @@ components:
         name:
           type: string
           description: The name of the developer (from GitHub)
+          example: r488it
         email:
           type: string
           description: The email of the developer (from Github)
+          example: name@email.org
         accessToken:
           type: string
-          description: he JWT access token of the developer (from Github) for user to server API Calls
+          description: The JWT access token of the developer (from Github) for user to server API Calls
+          example: ghu_clhzH0E07dPHKLCxnIC3okyITV0BVk18XwkE
         githubID:
           type: string
           description: The GitHub ID of the developer
+          example: r488it
         dapp:
           $ref: "#/components/schemas/Dapp"
         org:
@@ -406,9 +440,11 @@ components:
         name:
           type: string
           description: Dapp Name
+          example: My Cool NFT Creator dApp
         description:
           type: string
           description: About dApp
+          example: A really cool NFT Creator dApp
         images:
           type: object
           properties:
@@ -416,18 +452,21 @@ components:
               type: string
               format: binary
               description: A URL to the logo of the dApp. Should be square and 512x512 in PNG format
+              example: 'https://example.com/logo.png'
             banner:
               type: string
               format: binary
               description: A URL to the banner of the dApp. Should be 1920x1080 and in PNG format
+              example: https://www.example.com/banner.png
             screenshots:
               type: array
               description: A list of URLs to the screenshots of the dApp. Should be 1284 x 2778 and in PNG format
               items:
                 type: string
                 format: binary
-                xml:
-                  name: screenshot
+              example:
+              - https://www.example.com/screenshot_1.png
+              - https://www.example.com/screenshot_2.png
         repoUrl:
           type: string
           format: uri
@@ -435,28 +474,36 @@ components:
         dappId:
           type: string
           description: A Unique ID for each dApp
+          example: example.store.dapp
         minAge:
           type: integer
           description: The min age of user who should access this dApp
+          example: 13
         isMatureForAudience:
           type: boolean
           description: Boolean to signify if the dApp is for mature audience
+          example: false
         isSelfModerated:
           type: boolean
           description: Boolean to signify if the dApp developers have a moderation in place for the content posted/generated by the dApp or it's users
+          example: true
         language:
           type: string
           description: A string in ISO-639-1 which signifies the language of the dApp
+          example: en
         version:
           type: string
           description: The version of the dApp that is available on the dApp store
+          example: 0.1.0
         isListed:
           type: boolean
           description: Boolean to signify if the dApp is listed on the dApp store
+          example: true
         listDate:
           type: string
           format: date
           description: The date on which this dApp is listed on dApp store. This date can be a future date as well. This can not be in past.
+          example: 2021-11-13
         availableOnPlatform:
           type: array
           description: A string signifying if the dApp is available on which platform - web, iOS, android
@@ -466,8 +513,8 @@ components:
               - ios
               - web
               - android
-            xml:
-              name: platform name
+            example:
+              web
         geoRestrictions:
           type: object
           description: A list of countries where the dApp is available or unavailable. If this is not present, the dApp is available everywhere. If this is present, then one of either allowedCountries or blockedCountries should be present. If both are present, then the dApp is available in allowedCountries and unavailable in blockedCountries. The name of countries should be in ISO-3661-1 Alpha-2 Code.
@@ -477,15 +524,16 @@ components:
               description: A list of countries where the dApp is available
               items:
                 type: string
-                xml:
-                  name: item
+              example:
+                - US
+                - IN
             blockedCountries:
               type: array
               description: A list of countries where the dApp is unavailable
               items:
                 type: string
-                xml:
-                  name: item
+              example:
+                - CN
         developer:
           type: object
           required:
@@ -499,41 +547,53 @@ components:
             legalName:
               type: string
               description: Legal name of the developer or the company
+              example: John Doe & Sons
             logo:
               type: string
               description: A URL to the logo of the developer or the company. Should be square and 512x512 in PNG format
+              example: https://www.example.com/logo_small.png
             website:
               type: string
-
+              example: https://www.example.com
             privacyPolicyUrl:
               type: string
+              example: https://www.example.com/privacy
             support:
               type: object
               properties:
                 url:
                   type: string
                   format: uri
+                  example: https://www.example.com/support
                 email:
                   type: string
                   format: email
+                  example: support@example.com
             githubId:
               type: string
               description: The github ID of the developer
+              example: r488it
         tags:
           type: array
           items:
             type: string
-            xml:
-              name: tag
+          example:
+          - nft maker
         chains:
           type: array
           items:
             type: integer
-            xml:
-              name: chain id
+          example:
+          - 1
+          - 137
         category:
           type: string
-          description: The category of the dApp. You can assign one category to your dApp. The category you select is particularly important for your app’s discoverability on the dApp Store. This will be the category in which the app appears when users browse the dApp Store or filter search results, and it determines placement on the dApps tab or Games
+          description: The category of the dApp. You can assign one category to your dApp.
+            The category you select is particularly important for your app's discoverability on
+            the dApp Store. This will be the category in which the app appears when users browse
+            the dApp Store or filter search results, and it determines placement on the dApps tab
+            or Games.
+          example: books
           enum:
             - books
             - business
