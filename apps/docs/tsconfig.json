@@ -17,6 +17,9 @@
     "noUncheckedIndexedAccess": true,
     "rootDir": ".",
     "outDir": "dist",
+    "typeRoots": [
+      "./src/types/*.d.ts",
+    ]
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "**/*.cjs", "**/*.mjs"],
   "exclude": ["node_modules"]

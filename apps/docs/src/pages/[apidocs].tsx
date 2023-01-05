@@ -77,6 +77,12 @@ const APIDocs: NextPage = () => {
         <meta name="description" content="API docs for Meroku StoreKit." />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      <div>
+        Email: { session?.user?.email} <br />
+        Token: { session?.user.accessToken} <br />
+        Github ID: { session?.user?.login} <br />
+        Github Name: { session?.user?.name}
+      </div>
       <main>
         <API
           apiDescriptionUrl={`/api-specs/${router.query.apidocs}.yml`}

@@ -2,13 +2,34 @@ openapi: 3.0.3
 info:
   title: Meroku dApp store
   version: "1.2"
-  description: "Open API specs for Meroku DApp store."
-  contact:
-    email: hardik.agarwal@bitpack.me
+  description: Open API specs for Meroku DApp store.
+
+    This documentation is the guide to Backend API. These APIs are required
+    to build the frontend.
+
+
+    You can choose to build on top of this API or use the npm package available at
+    [some link](https://www.example.com)
+
+
+    **Authentication**
+
+
+    The endpoints themselves are public. The CORS policy restricts browser usage beyond `*.meroku.store`.
+    This means that you can use these APIs in your backend services, but if called directly from frontend,
+    it has to be hosted at *.meroku.store.
+
+
+    The `GET` calls are public without rate limiting.
+
+
+    The `POST`, `UPDATE`, `DELETE` calls ensure that only the dApp developer can make changes to their own dApp listing.
+    This is done by sending the Github (user - server) token in these API calls. The mechanism to get the Github access
+    tokens is upto the frontend to decide. They can for example create a Github App or use a service like Auth0.
 servers:
   - url: https://api-a.meroku.store
     description: Testing Server
-  - url: http://localhost:8000/api
+  - url: http://localhost:8001/api
     description: Development Server
 tags:
   - name: DApp Registry
@@ -17,63 +38,14 @@ tags:
     description: Meroku store registry to `get` the store title
 paths:
   /dapp:
-    put:
-      tags:
-        - DApp Registry
-      summary: Update dApp
-      description: For updating the existing dApp
-      operationId: updateDApp
-      requestBody:
-        description: Send the request with the updated parameters
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: "#/components/schemas/DappWithDevCreds"
-        required: true
-      responses:
-        "200":
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                type: string
-        "400":
-          description: Invalid ID supplied
-        "404":
-          description: DApp not found
-        "405":
-          description: Validation exception
-    post:
-      tags:
-        - DApp Registry
-      summary: Add dApp
-      description: Adding new dApp to the store
-      operationId: addDApp
-      requestBody:
-        description: Send the request with dApp schema parameters
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: "#/components/schemas/DappWithDevCreds"
-        required: true
-      responses:
-        "200":
-          description: Successful operation
-          content:
-            application/json:
-              schema:
-                type: string
-        "400":
-          description: Invalid ID supplied
-        "404":
-          description: DApp not found
-        "405":
-          description: Validation exception
     get:
       tags:
         - DApp Registry
       summary: Get dApp
-      description: User can search dApp by input string along with choosing either one or more filter options
+      description: Get all dApps or search by a keyword. Optionally, filter on specific attributes of the dApp.
+
+
+        This API call will get all the dApps or perform a text search.
       operationId: getDApp
       parameters:
         - in: query
@@ -207,6 +179,62 @@ paths:
                   $ref: "#/components/schemas/Dapp"
         "400":
           description: Invalid status value
+
+    put:
+      tags:
+        - DApp Registry
+      summary: Update dApp
+      description: For updating the existing dApp
+      operationId: updateDApp
+      requestBody:
+        description: Send the request with the updated parameters
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/DappWithDevCreds"
+        required: true
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: string
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: DApp not found
+        "405":
+          description: Validation exception
+
+    post:
+      tags:
+        - DApp Registry
+      summary: Add dApp
+      description: Adding new dApp to the store
+      operationId: addDApp
+      requestBody:
+        description: Send the request with dApp schema parameters
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/DappWithDevCreds"
+        required: true
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: string
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: DApp not found
+        "405":
+          description: Validation exception
+
+
   /dapp/deleteApp:
     post:
       tags:
