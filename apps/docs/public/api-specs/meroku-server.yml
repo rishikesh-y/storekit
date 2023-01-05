@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Meroku dApp store
-  version: "1.2"
+  version: "1.3"
   description: Open API specs for Meroku DApp store.
 
     This documentation is the guide to Backend API. These APIs are required
