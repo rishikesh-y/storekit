@@ -359,10 +359,10 @@
   resolved "https://registry.yarnpkg.com/@juggle/resize-observer/-/resize-observer-3.4.0.tgz#08d6c5e20cf7e4cc02fd181c4b0c225cd31dbb60"
   integrity sha512-dfLbk+PwWvFzSxwk3n5ySL0hfBog779o8h68wK/7/APo/7cgyWp5jcXockbxdk5kFRkbeXWm4Fbi9FrdN381sA==
 
-"@merokudao/dapp-store-registry@0.1.7":
-  version "0.1.7"
-  resolved "https://registry.yarnpkg.com/@merokudao/dapp-store-registry/-/dapp-store-registry-0.1.7.tgz#13914bfe1d4af38321bec9f86f9aba91376c269c"
-  integrity sha512-zF/su61mAuXsGH3ZtoLq8YsIfi0TWqW14RSZ4tjpSKjtV9NOY+4l8yGL2g78IDKR7E06mYt03SvPzba2Onn2lA==
+"@merokudao/dapp-store-registry@0.1.8":
+  version "0.1.8"
+  resolved "https://registry.yarnpkg.com/@merokudao/dapp-store-registry/-/dapp-store-registry-0.1.8.tgz#352a2c9b5e0e6306f0d700a5c8f5af54e4323421"
+  integrity sha512-WQ+KF+XhyKxYPWzZctCCzWZEBvyEa45fa2n3QzWXgv/v1RSRp1bBV2l9b1sM8CiBmMTNu0u12X0cvqfmTGKFkA==
   dependencies:
     "@stdlib/nlp-porter-stemmer" "^0.0.7"
     ajv "^8.11.2"

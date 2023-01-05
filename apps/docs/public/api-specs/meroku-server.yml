@@ -479,7 +479,7 @@ components:
           type: integer
           description: The min age of user who should access this dApp
           example: 13
-        isMatureForAudience:
+        isForMatureAudience:
           type: boolean
           description: Boolean to signify if the dApp is for mature audience
           example: false
