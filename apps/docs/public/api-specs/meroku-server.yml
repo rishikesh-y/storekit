@@ -569,7 +569,7 @@ components:
                   type: string
                   format: email
                   example: support@example.com
-            githubId:
+            githubID:
               type: string
               description: The github ID of the developer
               example: r488it
