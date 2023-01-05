@@ -80,7 +80,7 @@ const APIDocs: NextPage = () => {
       <div>
         Email: { session?.user?.email} <br />
         Token: { session?.user.accessToken} <br />
-        Github ID: { session?.user?.login} <br />
+        Github ID: { session?.user?.name} <br />
         Github Name: { session?.user?.name}
       </div>
       <main>
