@@ -12,7 +12,7 @@ class App {
     this.middlewares();
 
     const corsOptions = {
-      origin: [ /\.meroku\.store$/, 'http://localhost:3000']
+      origin: [ /\.meroku\.store$/, 'http://localhost:3000', 'https://staging-dapp-registry.netlify.app']
     }
 
     this.server.use(cors(corsOptions));
