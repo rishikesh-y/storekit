@@ -53,8 +53,7 @@ class awsS3Controller {
       const command = new PutObjectCommand({
         Bucket: bucket,
         Key: `${dappID}/${field}`,
-        ContentType: contentType,
-        ContentDisposition: contentDisposition
+        ContentType: contentType
       })
 
       const url = await getSignedUrl(s3Client, command, { expiresIn: 60 * 15 });
