@@ -1371,10 +1371,10 @@
   resolved "https://registry.npmjs.org/@juggle/resize-observer/-/resize-observer-3.4.0.tgz"
   integrity sha512-dfLbk+PwWvFzSxwk3n5ySL0hfBog779o8h68wK/7/APo/7cgyWp5jcXockbxdk5kFRkbeXWm4Fbi9FrdN381sA==
 
-"@merokudao/dapp-store-registry@0.1.16":
-  version "0.1.16"
-  resolved "https://registry.yarnpkg.com/@merokudao/dapp-store-registry/-/dapp-store-registry-0.1.16.tgz#9660ef17b42514061bbd4c7f630964cac16d772b"
-  integrity sha512-bVo0vTMiReKDiLdpeTGV3RhKVWgzKNSqgs/Alwt89QqOtu3NwtzA48aB0Ul0o+4aXboOuoRw5DBfgPz2POl1SQ==
+"@merokudao/dapp-store-registry@0.1.17":
+  version "0.1.17"
+  resolved "https://registry.yarnpkg.com/@merokudao/dapp-store-registry/-/dapp-store-registry-0.1.17.tgz#1ea9275bf02c4f751926e95208786b941a3dab28"
+  integrity sha512-Zu7/nZoCG7zooYcgKyO+ZqQFueNQVxB0O9keF2wBghhLPqTu6GhrWp71XU/M/pWfsMGwWSXmGHKkBXgznhGK8g==
   dependencies:
     "@stdlib/nlp-porter-stemmer" "^0.0.7"
     ajv "^8.11.2"
