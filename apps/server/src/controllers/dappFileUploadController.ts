@@ -40,10 +40,12 @@ class awsS3Controller {
 
     let bucket = process.env.BUCKET_NAME_PUBLIC;
     let contentType = 'image/*';
+    let contentDisposition = 'inline';
 
     if (field === "build") {
       bucket = process.env.BUCKET_NAME_PRIVATE;
       contentType = 'application/zip';
+      contentDisposition = 'attachment';
     }
 
     try {
@@ -51,7 +53,8 @@ class awsS3Controller {
       const command = new PutObjectCommand({
         Bucket: bucket,
         Key: `${dappID}/${field}`,
-        ContentType: contentType
+        ContentType: contentType,
+        ContentDisposition: contentDisposition
       })
 
       const url = await getSignedUrl(s3Client, command, { expiresIn: 60 * 15 });
