@@ -52,4 +52,6 @@ routes.post(
   DappFileUploadController.preSignedUrlUpload
 );
 
+routes.get("/dapp/:dappId/build", DappFileUploadController.getPreSignedBuildUrl);
+
 export default routes;

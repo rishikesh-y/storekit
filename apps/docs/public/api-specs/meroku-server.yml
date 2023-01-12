@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Meroku dApp store
-  version: "1.5"
+  version: "1.6"
   description: Open API specs for Meroku DApp store.
 
     This documentation is the guide to Backend API. These APIs are required
@@ -455,6 +455,30 @@ paths:
                 $ref: "#/components/schemas/PreSignedUrlResponse"
         "400":
           description: Operation failed
+
+  /dapp/{dappId}/build:
+    get:
+      tags:
+        - DApp Registry
+      summary: Build Download URL
+      operationId: downloadBuildUrl
+      parameters:
+        - in: path
+          name: dappId
+          description: Dapp Id where upload will happen
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PreSignedUrlResponse'
+        "400":
+          description: Operation failed
+
 components:
   schemas:
     DappIdWithDevCreds:

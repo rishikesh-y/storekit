@@ -85,8 +85,8 @@ class awsS3Controller {
     try {
       const url = s3.getSignedUrl("getObject", {
         Bucket: process.env.BUCKET_NAME_PRIVATE,
-        Key: <string>req.query.dappId,
-        Expires: 60 * 15, // 15 minutes
+        Key: `${req.params.dappId}/build.zip`,
+        Expires: 60 * 15 // 15 minutes,
       });
       return res.status(200).json({ success: true, url: url });
     } catch (e) {
