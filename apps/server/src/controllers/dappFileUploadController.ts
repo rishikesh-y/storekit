@@ -26,7 +26,7 @@ const s3Client = new S3Client({
 
 class awsS3Controller {
   constructor() {
-    this.getPreSignedUrl = this.getPreSignedUrl.bind(this);
+    this.getPreSignedBuildUrl = this.getPreSignedBuildUrl.bind(this);
     this.updateFile = this.updateFile.bind(this);
     this.deleteFile = this.deleteFile.bind(this);
   }
@@ -46,22 +46,31 @@ class awsS3Controller {
     if (field === "build") {
       bucket = process.env.BUCKET_NAME_PRIVATE;
       contentType = 'application/zip';
-      contentDisposition = 'attachment';
+      contentDisposition = 'attachment; filename=build.zip';
       key += '.zip';
     } else {
       key += '.png';
     }
 
     try {
+      if (field === "screenshots") {
+        const urls = new Array<string>();
+        for (const x of [...Array(5).keys()]) {
+          urls.push(await getSignedUrl(s3Client, new PutObjectCommand({
+            Bucket: bucket,
+            Key: `${dappID}/${field}-${x}.png`,
+            ContentType: contentType
+          }), { expiresIn: 60 * 15 }));
+        }
+        return res.status(200).json({ success: true, urls: urls });
+      }
 
       const command = new PutObjectCommand({
         Bucket: bucket,
         Key: key,
         ContentType: contentType
       })
-
       const url = await getSignedUrl(s3Client, command, { expiresIn: 60 * 15 });
-
       return res.status(200).json({ success: true, url: url });
     } catch (e) {
       return res.status(400).json({ errors: [{ msg: e.message }] });
@@ -72,7 +81,7 @@ class awsS3Controller {
   * Get file presigned url from aws-s3 servers
   * @param params eg: { Bucket: "bucketName", Key: "objectKey",}
   */
-  getPreSignedUrl = async (req: Request, res: Response) => {
+  getPreSignedBuildUrl = async (req: Request, res: Response) => {
     try {
       const url = s3.getSignedUrl("getObject", {
         Bucket: process.env.BUCKET_NAME_PRIVATE,
