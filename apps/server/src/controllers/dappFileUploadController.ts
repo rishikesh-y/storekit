@@ -41,18 +41,22 @@ class awsS3Controller {
     let bucket = process.env.BUCKET_NAME_PUBLIC;
     let contentType = 'image/*';
     let contentDisposition = 'inline';
+    let key = `${dappID}/${field}`;
 
     if (field === "build") {
       bucket = process.env.BUCKET_NAME_PRIVATE;
       contentType = 'application/zip';
       contentDisposition = 'attachment';
+      key += '.zip';
+    } else {
+      key += '.png';
     }
 
     try {
 
       const command = new PutObjectCommand({
         Bucket: bucket,
-        Key: `${dappID}/${field}`,
+        Key: key,
         ContentType: contentType
       })
 
