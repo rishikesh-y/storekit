@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Meroku dApp store
-  version: "1.6"
+  version: "1.7"
   description: Open API specs for Meroku DApp store.
 
     This documentation is the guide to Backend API. These APIs are required
@@ -404,7 +404,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PreSignedUrlResponse"
+                $ref: "#/components/schemas/PreSignedUrlsResponse"
         "400":
           description: Operation failed
 
@@ -567,6 +567,18 @@ components:
         - description
         - key
         - dappIds
+    PreSignedUrlsResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        urls:
+          type: array
+          items:
+            type: string
+            example:
+            - https://meroku-app-images-dev.s3.amazonaws.com/asdf/logo?Content-Type=image%2F%2A&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=OAUBBB7%2F20230112%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20230112T083913Z&X-Amz-Expires=900&X-Amz-Signature=d3d42b06af1fe5afc83a6f89810c5e3ec1d88eff560&X-Amz-SignedHeaders=hos
+
     PreSignedUrlResponse:
       type: object
       properties:
@@ -574,7 +586,6 @@ components:
           type: boolean
         url:
           type: string
-          format: binary
           example: https://meroku-app-images-dev.s3.amazonaws.com/asdf/logo?Content-Type=image%2F%2A&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=OAUBBB7%2F20230112%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20230112T083913Z&X-Amz-Expires=900&X-Amz-Signature=d3d42b06af1fe5afc83a6f89810c5e3ec1d88eff560&X-Amz-SignedHeaders=hos
     Registry:
       type: object
