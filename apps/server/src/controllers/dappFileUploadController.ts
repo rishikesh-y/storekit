@@ -1,12 +1,13 @@
 import { Request, Response } from "express";
-import multer, { FileFilterCallback } from "multer";
+import Dotenv from "dotenv";
 import AWS from "aws-sdk";
 import Debug from "debug";
-import { S3Client, AbortMultipartUploadCommand } from "@aws-sdk/client-s3";
+import { S3Client, GetObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+
+Dotenv.config();
 
 const debug = Debug("meroku:server");
-
-
 
 const s3 = new AWS.S3({
   signatureVersion: "v4",
@@ -15,7 +16,13 @@ const s3 = new AWS.S3({
   region: process.env.AWS_S3_REGION,
 });
 
-const s3Client = new S3Client({ region: "ap-south-1" });
+const s3Client = new S3Client({
+  region: process.env.AWS_S3_REGION,
+  credentials: {
+    accessKeyId: process.env.AWS_KEY,
+    secretAccessKey: process.env.AWS_SECRET
+  }
+});
 
 class awsS3Controller {
   constructor() {
@@ -40,12 +47,15 @@ class awsS3Controller {
     }
 
     try {
-      const url = s3.getSignedUrl("putObject", {
+
+      const command = new PutObjectCommand({
         Bucket: bucket,
         Key: `${dappID}/${field}`,
-        Expires: 60 * 15, // 15 minutes
         ContentType: contentType
-      });
+      })
+
+      const url = await getSignedUrl(s3Client, command, { expiresIn: 60 * 15 });
+
       return res.status(200).json({ success: true, url: url });
     } catch (e) {
       return res.status(400).json({ errors: [{ msg: e.message }] });
