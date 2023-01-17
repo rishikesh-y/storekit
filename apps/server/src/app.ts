@@ -15,6 +15,7 @@ class App {
       origin: [ /\.meroku\.store$/,
         'http://localhost:3000',
         'https://staging-dapp-registry.netlify.app',
+        'https://dapp-store.netlify.app',
         'https://editor.swagger.io',
       ]
     }
