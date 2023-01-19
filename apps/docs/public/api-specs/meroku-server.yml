@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Meroku dApp store
-  version: "1.9"
+  version: "1.10"
   description: Open API specs for Meroku DApp store.
 
     This documentation is the guide to Backend API. These APIs are required
@@ -551,7 +551,7 @@ paths:
           content:
             application/json:
               schema:
-                type: string
+                $ref: "#/components/schemas/DappRating"
 
     get:
       tags:
