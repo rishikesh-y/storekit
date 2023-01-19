@@ -1,6 +1,6 @@
-import { query, Router } from "express";
+import { Router } from "express";
 import { DappFileUploadController, DappRegistryController, GhAppController, StoreRegistryController, analyticsController } from "./controllers";
-import { body } from "express-validator";
+import { body, query, header, validationResult } from 'express-validator';
 import multer from "multer";
 
 const routes = Router();
@@ -56,5 +56,11 @@ routes.get("/dapp/:dappId/build", DappFileUploadController.getPreSignedBuildUrl)
 
 routes.get("/o/view/:dappId", analyticsController.goto);
 routes.get("/o/download/:dappId", analyticsController.download);
+routes.post("/dapp/rate",
+  body("dappId").isString().not().isEmpty(),
+  analyticsController.registerRating);
+routes.get("/dapp/rate",
+  query("dappId").isString().not().isEmpty(),
+  analyticsController.getRatingUser);
 
 export default routes;

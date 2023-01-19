@@ -4,6 +4,7 @@ import { DappStoreRegistry } from "@merokudao/dapp-store-registry";
 import { validationResult } from "express-validator";
 import Debug from "debug";
 import parseISO from "date-fns/parseISO";
+import { DappInstall } from "../entities/dappInstall.entity";
 
 const debug = Debug("meroku:server");
 const DappStore = new DappStoreRegistry();
@@ -105,14 +106,23 @@ class DappRegistry {
         filterOpts.developer.githubID = tmp;
       }
 
+      let response: DAppSchema[];
       if (search && search.trim() !== "") {
-        const response: DAppSchema[] = DappStore.search(search, filterOpts);
-        return res.json(response);
+        response = DappStore.search(search, filterOpts);
       } else {
-        const response: DAppSchema[] = await DappStore.dApps(filterOpts);
-        return res.json(response);
+        response = await DappStore.dApps(filterOpts);
       }
+      const metrics = await DappInstall.getMetrics(response.map((dapp) => dapp.dappId));
+      response = response.map((dapp) => {
+        const metric = metrics.find((m) => m.dappId === dapp.dappId);
+        if (metric) {
+          return { ...dapp, metrics: metric };
+        }
+        return dapp;
+      });
+      return res.json(response);
     } catch (e) {
+      debug(e);
       return res.status(400).json({ errors: [{ msg: e.message }] });
     }
   };

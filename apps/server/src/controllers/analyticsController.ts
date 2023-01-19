@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import Debug from "debug";
 import { DappInstall } from "../entities/dappInstall.entity";
 import { getBuildDownloadPreSignedUrl } from "./dappFileUploadController";
+import { validationResult } from 'express-validator';
 
 const debug = Debug("meroku:analyticsController")
 
@@ -55,7 +56,7 @@ class AnalyticsController {
       (!dapp.appUrl.endsWith(".zip") && !dapp.appUrl.endsWith(".apk"))) {
       return res.status(404).send("No App Download URL found");
     }
-    await DappInstall.registerInstall(
+    await DappInstall.registerDownload(
       dappId,
       dapp.version,
       dapp.category,
@@ -65,6 +66,61 @@ class AnalyticsController {
     );
     const url = getBuildDownloadPreSignedUrl(dappId);
     return res.redirect(url);
+  }
+
+  async metrics(req: Request, res: Response) {
+    const { dappId } = req.params;
+    const metrics = await DappInstall.getMetrics(dappId);
+    return res.json({
+      metrics
+    });
+  }
+
+  async registerRating(req: Request, res: Response) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    const { dappId, userId, userAddress, rating, comment } = req.body;
+    debug("registerRating", dappId, userId, userAddress, rating);
+    try {
+      const result = await DappInstall.registerRating(dappId, rating, userId, userAddress, comment);
+      return res.json({
+        status: "success",
+        ...result
+      });
+    } catch (e) {
+      debug("Error in registerRating", e);
+      return res.status(400).json({
+        status: "error",
+        message: e.message
+      });
+    }
+  }
+
+  async getRatingUser(req: Request, res: Response) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    const { dappId, userId, userAddress } = req.query;
+    debug("getRatingUser", dappId, userId, userAddress);
+    try {
+      const result = await DappInstall.getUserRating(dappId as string,
+        userId as string,
+        userAddress as string);
+      debug(result);
+      return res.json({
+        status: "success",
+        ...result
+      });
+    } catch (e) {
+      debug("Error in getRatingUser", e);
+      return res.status(400).json({
+        status: "error",
+        message: e.message
+      });
+    }
   }
 
 }

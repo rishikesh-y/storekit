@@ -1,6 +1,14 @@
-import { BaseEntity, Entity, Unique, PrimaryGeneratedColumn, Column, Index, MoreThan, Not, IsNull } from "typeorm";
+import { BaseEntity, Entity, Unique, PrimaryGeneratedColumn, Column, Index, MoreThan, Not, IsNull, FindOperator, FindOptionsWhere, In } from "typeorm";
 import { IsInt, Min, Max } from "class-validator";
+import Debug from "debug";
 
+const debug = Debug("server:entity:dappInstall");
+
+interface AppMetric {
+  dappId: string;
+  rating: number;
+  downloads: number;
+}
 
 /**
  * A DappInstall is a record of a user downloading and installing a dapp.
@@ -105,25 +113,57 @@ export class DappInstall extends BaseEntity {
     return true;
   }
 
-  public static async findInstalls(dappId: string,
+  private static async findFirstInteraction(dapId: string, userId: string | undefined, userAddress: string | undefined) {
+    const where: FindOptionsWhere<DappInstall> = {
+      dappId: dapId
+    };
+    if (userId) {
+      where.userId = userId;
+    }
+    if (userAddress) {
+      where.userAddress = userAddress;
+    }
+    return await DappInstall.findOne({
+      where: where,
+      order: {
+        id: "ASC",
+      },
+    });
+  }
+
+  public static async findDownloads(dappId: string | string[],
     userId?: string,
     userAddress?: string,
     device?: string) {
-      if (this.validate(dappId, userId, userAddress)) {
-        let where = {
-          dappId: dappId,
-          userId: userId ? userId : null,
-          userAddress: userAddress ? userAddress : null,
-          device: device ? device : null,
-          installDate: Not(IsNull())
-        };
-        return await DappInstall.find({
-          where: where,
-          order: {
-            downloadDate: "DESC",
-          },
-        });
-      }
+    let where: FindOptionsWhere<DappInstall> | FindOptionsWhere<DappInstall>[] = {
+      dappId: typeof dappId === "string" ? dappId : In(dappId),
+      downloadDate: Not(IsNull())
+    };
+    if (userId) {
+      where = {
+        ...where,
+        userId: userId,
+      };
+    }
+    if (userAddress) {
+      where = {
+        ...where,
+        userAddress: userAddress,
+      };
+    }
+    if (device) {
+      where = {
+        ...where,
+        device: device,
+      };
+    }
+
+    return await DappInstall.find({
+      where: where,
+      order: {
+        downloadDate: "DESC",
+      },
+    });
   }
 
   public static async registerVisit(dappId: string,
@@ -146,18 +186,13 @@ export class DappInstall extends BaseEntity {
     }
   }
 
-  public static async registerInstall(dappId: string,
+  public static async registerDownload(dappId: string,
     dappVersion: string,
     dappCategory: string,
     userId: string | undefined,
     userAddress: string | undefined,
     device: string) {
     if (this.validate(dappId, userId, userAddress)) {
-      const existingInstallOnSameDevice = await this.findInstalls(dappId, userId, userAddress, device);
-      if (existingInstallOnSameDevice &&
-        existingInstallOnSameDevice.some(x => x.dappVersion === dappVersion)) {
-        throw new Error("Dapp already installed on this device");
-      }
       const i = new DappInstall();
       i.dappId = dappId;
       i.dappVersion = dappVersion;
@@ -176,7 +211,7 @@ export class DappInstall extends BaseEntity {
     userAddress: string | undefined,
     device: string) {
     if (this.validate(dappId, userId, userAddress)) {
-      const i = await this.findInstalls(dappId, userId, userAddress, device);
+      const i = await this.findDownloads(dappId, userId, userAddress, device);
       return i.map(async x => {
         x.uninstallDate = new Date();
         await x.save();
@@ -199,12 +234,14 @@ export class DappInstall extends BaseEntity {
     userAddress?: string,
     comment?: string) {
     if (this.validate(dappId, userId, userAddress, rating)) {
-      const i = await this.findInstalls(dappId, userId, userAddress);
-      if (i) {
-        i[0].rating = rating;
-        i[0].comment = comment;
-        await i[0].save();
-        return i[0];
+      const firstInteraction = await this.findFirstInteraction(dappId, userId, userAddress);
+      if (firstInteraction) {
+        firstInteraction.rating = rating;
+        firstInteraction.comment = comment;
+        await firstInteraction.save();
+        return firstInteraction;
+      } else {
+        throw new Error("No download found for the given parameters");
       }
     }
   }
@@ -217,7 +254,7 @@ export class DappInstall extends BaseEntity {
     device: string) {
     if (this.validate(dappId, userId, userAddress)) {
       await this.registerUninstall(dappId, userId, userAddress, device);
-      return await this.registerInstall(dappId,
+      return await this.registerDownload(dappId,
         dappVersion,
         dappCategory,
         userId,
@@ -236,34 +273,44 @@ export class DappInstall extends BaseEntity {
     userId: string | undefined,
     userAddress: string | undefined) {
     if (this.validate(dappId, userId, userAddress)) {
-      const installs = await this.findInstalls(dappId, userId, userAddress);
-      if (installs) {
+      const firstInteraction = await this.findFirstInteraction(dappId, userId, userAddress);
+      if (firstInteraction) {
         return {
-          rating: installs[0].rating,
-          comment: installs[0].comment,
+          rating: firstInteraction.rating,
+          comment: firstInteraction.comment,
         };
       }
     }
   }
 
-  public static async overallRating(dappId: string) {
-    if (!dappId) {
-      throw new Error("dappId must be provided");
-    }
-    const installs = await this.findInstalls(dappId);
-    if (installs && installs.length > 0) {
-      const ratings = installs.map(x => x.rating);
-      return ratings.reduce((a, b) => a + b, 0) / ratings.length;
-    }
-    return 0;
-  }
-
-  public static async getInstallCount(dappId: string) {
-    if (!dappId) {
-      throw new Error("dappId must be provided");
-    }
-    const installs = await this.findInstalls(dappId);
-    return installs.length;
+  public static async getMetrics(dappIds: string[] | string):
+    Promise<AppMetric[] > {
+      if (!dappIds) {
+        throw new Error("dappId must be provided");
+      }
+      const downloads = await this.findDownloads(dappIds);
+      const installs = downloads.filter(x => x.downloadDate);
+      const uninstalls = downloads.filter(x => x.uninstallDate);
+      const ratings = downloads.filter(x => x.rating);
+      const visits = downloads.filter(x => x.visitDate);
+      const dappIdsArray = typeof dappIds === "string" ? [dappIds] : dappIds;
+      const metrics = dappIdsArray.map(dappId => {
+        const d = downloads.filter(x => x.dappId === dappId);
+        const i = installs.filter(x => x.dappId === dappId);
+        const u = uninstalls.filter(x => x.dappId === dappId);
+        const r = ratings.filter(x => x.dappId === dappId);
+        const v = visits.filter(x => x.dappId === dappId);
+        return {
+          dappId,
+          downloads: d.length,
+          installs: i.length,
+          uninstalls: u.length,
+          ratingsCount: r.length,
+          visits: v.length,
+          rating: r.length ? r.reduce((a, b) => a + b.rating, 0) / r.length : 0,
+        };
+      });
+      return metrics;
   }
 
   /**

@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Meroku dApp store
-  version: "1.8"
+  version: "1.9"
   description: Open API specs for Meroku DApp store.
 
     This documentation is the guide to Backend API. These APIs are required
@@ -533,8 +533,83 @@ paths:
         "302":
           description: Redirect to the app URL
 
+  /dapp/rate:
+    post:
+      tags:
+        - Analytics
+      summary: Rate the dApp
+      description: Use this to register a rating from a user for a dApp
+      requestBody:
+        description: Send the request with dApp parameters
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DappRating"
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: string
+
+    get:
+      tags:
+        - "Analytics"
+      summary: Get User dApp Rating
+      description: Use this to get a user's rating for a dapp
+      parameters:
+        - in: query
+          name: dappId
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: userId
+          schema:
+            type: string
+        - in: query
+          name: userAddress
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DappRating"
+
+
 components:
   schemas:
+    DappRatingReq:
+      type: object
+      required:
+        - dappId
+      properties:
+        dappId:
+          type: string
+        userId:
+          type: string
+        userAddress:
+          type: string
+    DappRating:
+      type: object
+      required:
+        - dappId
+        - rating
+      properties:
+        dappId:
+          type: string
+        rating:
+          type: number
+        comment:
+          type: string
+        userId:
+          type: string
+        userAddress:
+          type: string
     DappIdWithDevCreds:
       type: object
       properties:
@@ -861,6 +936,33 @@ components:
             - travel
             - utilities
             - weather
+        metrics:
+          type: object
+          properties:
+            dappId:
+              type: string
+              example: mint.buidl.dapp
+            downloads:
+              type: number
+              example: 122872
+            installs:
+              type: number
+              example: 120293
+            uninstalls:
+              type: number
+              example: 726
+            ratingsCount:
+              type: number
+              example: 6872
+              description: Count of unique ratings received by this dapp.
+            visits:
+              type: number
+              example: 283633
+            rating:
+              type: number
+              example: 2.34
+              description: Average rating of the dapp
+
       required:
         - name
         - description
