@@ -24,6 +24,14 @@ const s3Client = new S3Client({
   }
 });
 
+export const getBuildDownloadPreSignedUrl = (dappId: string) => {
+  return s3.getSignedUrl("getObject", {
+  Bucket: process.env.BUCKET_NAME_PRIVATE,
+  Key: `${dappId}/build.zip`,
+  Expires: 60 * 15 // 15 minutes,
+});
+};
+
 class awsS3Controller {
   constructor() {
     this.getPreSignedBuildUrl = this.getPreSignedBuildUrl.bind(this);
@@ -83,11 +91,8 @@ class awsS3Controller {
   */
   getPreSignedBuildUrl = async (req: Request, res: Response) => {
     try {
-      const url = s3.getSignedUrl("getObject", {
-        Bucket: process.env.BUCKET_NAME_PRIVATE,
-        Key: `${req.params.dappId}/build.zip`,
-        Expires: 60 * 15 // 15 minutes,
-      });
+      const url = getBuildDownloadPreSignedUrl(req.params.dappId);
+
       return res.status(200).json({ success: true, url: url });
     } catch (e) {
       return res.status(400).json({ errors: [{ msg: e.message }] });

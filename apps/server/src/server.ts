@@ -1,11 +1,7 @@
-import app from "./app";
 import * as dotenv from "dotenv";
+import { App } from "./app";
 
 dotenv.config();
 
-// eslint-disable-next-line turbo/no-undeclared-env-vars
-const PORT = process.env.PORT || 8000;
-
-app.listen(PORT, () => {
-  console.log(`Server is running port ${PORT}`);
-});
+const app = new App();
+app.start();

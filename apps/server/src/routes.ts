@@ -1,5 +1,5 @@
 import { query, Router } from "express";
-import { DappFileUploadController, DappRegistryController, GhAppController, StoreRegistryController } from "./controllers";
+import { DappFileUploadController, DappRegistryController, GhAppController, StoreRegistryController, analyticsController } from "./controllers";
 import { body } from "express-validator";
 import multer from "multer";
 
@@ -53,5 +53,8 @@ routes.post(
 );
 
 routes.get("/dapp/:dappId/build", DappFileUploadController.getPreSignedBuildUrl);
+
+routes.get("/o/view/:dappId", analyticsController.goto);
+routes.get("/o/download/:dappId", analyticsController.download);
 
 export default routes;

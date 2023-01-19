@@ -17,7 +17,7 @@
     },
     "server":{
        "outputs": ["dist/**", ".next/**"],
-       "env":["./apps/server/.env"]
+       "env":["./apps/server/.env", "DATABASE_URL"]
     }
   },
   "globalEnv": [
