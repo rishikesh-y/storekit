@@ -55,8 +55,8 @@ servers:
 tags:
   - name: DApp Registry
     description: DApp registry endpoint to `get`, `create`, `update`, `delete` dApp in meroku store and `get` registry title
-  - name: Store Registry
-    description: Meroku store registry to `get` the store title
+  - name: Featured Section
+    description: Meroku Featured Section to `get` the store title
 paths:
   /dapp:
     get:
@@ -286,9 +286,9 @@ paths:
   /store/featured:
     get:
       tags:
-        - Store Registry
-      summary: Featured dApps
-      description: For finding featured dApps
+        - Featured Section
+      description: Fetch featured sections of registry.
+      summary: Get Featured Sections
       operationId: getFeaturedDApps
       responses:
         "200":
@@ -298,13 +298,100 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Dapp"
+                  $ref: "#/components/schemas/FeaturedSection"
         "400":
           description: Invalid status value
+
+    put:
+      tags:
+        - Featured Section
+      summary: Add a featured Section
+      description: This is to add a featured section to dapp
+      operationId: putFeaturedSection
+      requestBody:
+        description: Send the request with the parameters
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FeaturedSectionAddReq"
+        required: true
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: string
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: DApp not found
+        "405":
+          description: Validation exception
+
+    post:
+      tags:
+        - "Featured Section"
+      summary: Delete a featured Section
+      description: This is to delete a featured section to dapp
+      operationId: deleteFeaturedSection
+      requestBody:
+        description: Send the request with the parameters
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FeaturedSectionDelReq"
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: string
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: DApp not found
+        "405":
+          description: Validation exception
+
+  /store/featured/dapps:
+    post:
+      tags:
+        - "Featured Section"
+      summary: Toggle dApps in featured section
+      description: This is to toggle the dApps for a featured section. If these
+        dapps are not listed in the featured section, they will be added. If they
+        are already added, they will be removed.
+
+
+        If the section by the key does not exist, will return a HTTP 400 error.
+      operationId: putFeaturedDApps
+      requestBody:
+        description: Send the request with the parameters
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FeaturedDAppsAddReq"
+        required: true
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: string
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: DApp not found
+        "405":
+          description: Validation exception
+
   /store/title/:
     get:
       tags:
-        - Store Registry
+        - Featured Section
       summary: Registry title
       description: Returns the store title
       operationId: getStoreTitle
@@ -672,25 +759,126 @@ components:
         - accessToken
         - githubID
         - dapp
+    FeaturedSectionDelReq:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the developer (from GitHub)
+          example: r488it
+        email:
+          type: string
+          description: The email of the developer (from Github)
+          example: test@example.com
+        accessToken:
+          type: string
+          description: The JWT access token of the developer (from Github) for user to server API Calls
+          example: "ghu_cSB18uvyUKmNaC0adq3aAwIQTRY9U53RgMI"
+        githubID:
+          type: string
+          description: The GitHub ID of the developer
+          example: r4881t
+        sectionKey:
+          type: string
+          description: Key of the featured section which will be deleted.
+          example: "curated-list"
+
+    FeaturedDAppsAddReq:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the developer (from GitHub)
+          example: r488it
+        email:
+          type: string
+          description: The email of the developer (from Github)
+          example: example@email.com
+        accessToken:
+          type: string
+          description: The JWT access token of the developer (from Github) for user to server API Calls
+          example: "ghu_cSB18uvyUKmNaC0adq3aAwIQTRY9U53RgMI"
+        githubID:
+          type: string
+          description: The GitHub ID of the developer
+          example: r4881t
+        sectionKey:
+          type: string
+          description: Key of the featured section where the dapp will be added.
+          example: "curated-list"
+        dappIds:
+          type: array
+          description: List of dApp IDs that are part of this featured section.
+            The dApp IDs should be the same as the ones in the dApp Store's dApps
+            list. All the dApps in this list should be published.
+          items:
+            type: string
+            example: "example.store.dapp"
+    FeaturedSectionAddReq:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the developer (from GitHub)
+          example: r488it
+        email:
+          type: string
+          description: The email of the developer (from Github)
+          example: john@example.com
+        accessToken:
+          type: string
+          description: The JWT access token of the developer (from Github) for user to server API Calls
+          example: "ghu_cSB18uvyUKmNaC0adq3aAwIQTRY9U53RgMI"
+        githubID:
+          type: string
+          description: The GitHub ID of the developer
+          example: r4881t
+        sectionTitle:
+          type: string
+          description: Title of the Featured Section. This will be displayed on the dApp Store. It should be simple and clear.
+          example: "Our Curated list"
+        description:
+          type: string
+          description: Description of the Featured Section. This will be displayed on the dApp Store. It should be simple and clear.
+          example: "This is a curated list of dApps that we think you will like. Our curators have used these dApps and found them worthy of your attention."
+        dappIds:
+          type: array
+          description: List of dApp IDs that are part of this featured section.
+            The dApp IDs should be the same as the ones in the dApp Store's dApps
+            list. All the dApps in this list should be published.
+          items:
+            type: string
+            example: "example.store.dapp"
+      required:
+        - title
+        - description
+        - key
+        - dappIds
     FeaturedSection:
       type: object
       properties:
         title:
           type: string
           description: Title of the Featured Section. This will be displayed on the dApp Store. It should be simple and clear.
+          example: "Our Curated list"
         description:
           type: string
           description: Description of the Featured Section. This will be displayed on the dApp Store. It should be simple and clear.
+          example: "This is a curated list of dApps that we think you will like. Our curators have used these dApps and found them worthy of your attention."
         key:
           type: string
           description: Key of the Featured Section. This will be used to identify the Featured Section. It should be simple and clear
+          example: "curated-list-1"
         dappIds:
           type: array
-          description: List of dApp IDs that are part of this featured section. The dApp IDs should be the same as the ones in the dApp Store's dApps list.
+          description: List of dApp IDs that are part of this featured section.
+            The dApp IDs should be the same as the ones in the dApp Store's dApps
+            list. All the dappIds specified must already exist in the registry.
+            There must be at least one dappId in the list.
           items:
             type: string
-            xml:
-              name: dappId
+          example:
+            - "example.store.dapp"
       required:
         - title
         - description

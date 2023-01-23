@@ -5,12 +5,41 @@ import multer from "multer";
 
 const routes = Router();
 
-// READ
-routes.get("/dapp", DappRegistryController.getDapps);
-routes.get("/store/featured", StoreRegistryController.getFeaturedDapps);
+// Store
 routes.get("/store/title", StoreRegistryController.getStoreTitle);
 
+
+// Featured Section
+routes.get("/store/featured", StoreRegistryController.getFeaturedDapps);
+
+routes.put("/store/featured",
+  body("dappIds").isArray().not().isEmpty(),
+  body("email").isString().not().isEmpty(),
+  body("name").isString().not().isEmpty(),
+  body("accessToken").isString().not().isEmpty(),
+  body("githubID").isString().not().isEmpty(),
+  body("sectionTitle").isString().not().isEmpty(),
+  StoreRegistryController.addFeaturedSection);
+
+routes.post("/store/featured",
+  body("email").isString().not().isEmpty(),
+  body("name").isString().not().isEmpty(),
+  body("accessToken").isString().not().isEmpty(),
+  body("githubID").isString().not().isEmpty(),
+  body("sectionKey").isString().not().isEmpty(),
+  StoreRegistryController.deleteFeaturedSection);
+
+routes.post("/store/featured/dapps",
+  body("email").isString().not().isEmpty(),
+  body("name").isString().not().isEmpty(),
+  body("accessToken").isString().not().isEmpty(),
+  body("githubID").isString().not().isEmpty(),
+  body("dappIds").isArray().not().isEmpty(),
+  body("sectionKey").isString().not().isEmpty(),
+  StoreRegistryController.toggleFeaturedStatusOfDapp);
+
 // CREATE
+routes.get("/dapp", DappRegistryController.getDapps);
 routes.post(
   "/dapp",
   body("name").isString().not().isEmpty(),
