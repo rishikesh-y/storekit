@@ -30,8 +30,8 @@ info:
 
     ## Installing Github App for automated workflow
 
-    Use the [#/paths/app-ghID--installed/get](#/paths/app-ghID--installed/get) to check if the required github app is installed on the account.
-    If not, then get the URL from [/#/paths/app-installUrl/get](/#/paths/app-installUrl/get) and visit the URL to install the app.
+    Use the [/paths/app-ghID--installed/get](/paths/app-ghID--installed/get) to check if the required github app is installed on the account.
+    If not, then get the URL from [/paths/app-installUrl/get](/paths/app-installUrl/get) and visit the URL to install the app.
 
 
     In this server, you will be able to see your github details on the top left. You can use those
@@ -39,7 +39,7 @@ info:
 
 
 
-    **FAQs**
+    # FAQs
 
 
     1. I am getting a `400 Resource not accessible by integration` error on update calls.
