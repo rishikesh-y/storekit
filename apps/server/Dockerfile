@@ -9,7 +9,8 @@ RUN yarn
 ENV NODE_ENV=production
 
 RUN yarn build
-
+RUN yarn prisma generate
+RUN yarn prisma migrate deploy
 
 FROM node:19.3.0-alpine AS runner
 

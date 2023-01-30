@@ -1,0 +1,36 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model DappInstall {
+  id            Int       @id @default(autoincrement())
+  dappId        String    @db.VarChar
+  dappVersion   String    @db.VarChar
+  dappCategory  String    @db.VarChar
+  userId        String?   @db.VarChar
+  userAddress   String?   @db.VarChar
+  visitDate     DateTime? @db.Timestamp(6)
+  downloadDate  DateTime? @db.Timestamp(6)
+  installDate   DateTime? @db.Timestamp(6)
+  uninstallDate DateTime? @db.Timestamp(6)
+  device        String    @db.VarChar
+  rating        Int?
+  comment       String?   @db.VarChar
+
+  @@unique([dappId, userId, userAddress, device], map: "user_device_dapp")
+  @@index([userAddress])
+  @@index([userId])
+  @@index([uninstallDate])
+  @@index([dappCategory])
+  @@index([device])
+  @@index([downloadDate])
+  @@index([visitDate])
+  @@index([dappVersion])
+  @@index([installDate])
+  @@index([dappId])
+}
