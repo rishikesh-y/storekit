@@ -1,4 +1,5 @@
 FROM node:19.3.0 AS builder
+ARG DATABASE_URL
 
 WORKDIR /storekit
 
