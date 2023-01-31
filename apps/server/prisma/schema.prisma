@@ -35,3 +35,26 @@ model DappInstall {
   @@index([installDate])
   @@index([dappId])
 }
+
+model DappDomainVerify {
+  id               Int              @id @default(autoincrement())
+  dappId           String           @db.VarChar
+  domain           String           @db.VarChar
+  verificationCode String           @db.VarChar
+  githubUserId     String           @db.VarChar
+  verificationDate DateTime?        @db.Timestamp(6)
+  status           DappDomainStatus @default(NOT_STARTED)
+
+  @@unique([dappId, githubUserId], map: "dapp_github")
+  @@unique([dappId, verificationCode], map: "dapp_code")
+  @@index([dappId])
+  @@index([domain])
+  @@index([githubUserId])
+  @@index([status])
+}
+
+enum DappDomainStatus {
+  NOT_STARTED
+  PENDING
+  VERIFIED
+}

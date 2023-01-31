@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
     DappFileUploadController,
     DappRegistryController,
+    DomainVerificationController,
     GhAppController,
     StoreRegistryController,
     analyticsController,
@@ -108,6 +109,17 @@ routes.get(
     "/dapp/rate",
     query("dappId").isString().not().isEmpty(),
     analyticsController.getRatingUser
+);
+
+routes.post(
+    "/domainverification/:dappId/getVerificationId",
+    body("githubId").isString().not().isEmpty(),
+    DomainVerificationController.getVerificationId
+);
+routes.post(
+    "/domainverification/:dappId/verify",
+    body("githubId").isString().not().isEmpty(),
+    DomainVerificationController.verify
 );
 
 export default routes;

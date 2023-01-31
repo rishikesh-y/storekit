@@ -9,7 +9,7 @@ import {
     registerRating,
     registerVisit,
 } from "../utils/prisma";
-import { getBuildDownloadPreSignedUrl } from "./dappFileUploadController";
+import { getBuildDownloadPreSignedUrl } from "./DAppFileUpload";
 import { validationResult } from "express-validator";
 
 const debug = Debug("meroku:analyticsController");
