@@ -5,6 +5,7 @@ import { SessionProvider } from "next-auth/react";
 
 import "../styles/globals.css";
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 const MyApp: AppType = ({ Component, pageProps }) => {
   const [mounted, setMounted] = useState(false);
@@ -21,6 +22,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
     <SessionProvider session={(pageProps as any).session}>
       <Navbar />
       { Component ?  <Component {...pageProps} /> : undefined }
+      <Footer />
     </SessionProvider>
   );
 };
