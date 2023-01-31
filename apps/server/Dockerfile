@@ -1,4 +1,4 @@
-FROM node:19.3.0 AS builder
+FROM node:19.3.0-alpine3.17 AS builder
 ARG DATABASE_URL
 
 WORKDIR /storekit
