@@ -42,7 +42,7 @@ class DomainVerification {
 
         if (dappDomain) {
             return res.json({
-                verificationCode: dappDomain.verificationCode,
+                verificationCode: `meroku-site-verification=${dappDomain.verificationCode}`,
                 domain: dappDomain.domain,
             });
         }
@@ -77,7 +77,7 @@ class DomainVerification {
         });
 
         return res.json({
-            verificationCode: dappDomain.verificationCode,
+            verificationCode: `meroku-site-verification=${dappDomain.verificationCode}`,
             domain: dappDomain.domain,
         });
     }
@@ -135,7 +135,7 @@ class DomainVerification {
 
         return res.json({
             isVerified,
-            verificationDate: dappDomain.verificationDate,
+            verificationCode: `meroku-site-verification=${dappDomain.verificationCode}`,
             domain: dappDomain.domain,
         });
     }

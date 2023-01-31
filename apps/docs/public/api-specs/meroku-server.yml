@@ -678,10 +678,76 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/DappRating"
+                
+  /domainverification/:dappId/getVerificationId:
+    post:
+      tags:
+        - Domain Verification
+      summary: Get a domain verification code
+      description: Use this to get a domain verification to code to verify domain ownership.
+      requestBody:
+        description: Send the request with githubId
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - githubId
+              properties:
+                githubId:
+                  type: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DappGetVerificationId"
+                
+  /domainverification/:dappId/verify:
+    post:
+      tags:
+        - Domain Verification
+      summary: Verify domain txt records.
+      description: Use this to verify your domain ownership.
+      requestBody:
+        description: Send the request with githubId
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - githubId
+              properties:
+                githubId:
+                  type: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DappVerify"
 
 
 components:
   schemas:
+    DappGetVerificationId:
+      type: object
+      properties:
+        verificationCode:
+          type: string
+        domain:
+          type: string
+    DappVerify:
+      type: object
+      properties:
+        verificationCode:
+          type: string
+        domain:
+          type: string
+        isVerified:
+          type: boolean
     DappRatingReq:
       type: object
       required:
