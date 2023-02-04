@@ -10,9 +10,37 @@ const resolveTxt = promisify(dns.resolveTxt);
 
 class DomainVerification {
     constructor() {
+        this.getPendingDomains = this.getPendingDomains.bind(this);
+        this.getVerifiedDomains = this.getVerifiedDomains.bind(this);
         this.checkDomainTxtRecords = this.checkDomainTxtRecords.bind(this);
         this.getVerificationId = this.getVerificationId.bind(this);
         this.verify = this.verify.bind(this);
+    }
+
+    async getPendingDomains(req: Request, res: Response) {
+        let domains = await prisma.dappDomainVerify.findMany({
+            where: {
+                githubUserId: req.body.githubId,
+                status: {
+                    in: ["NOT_STARTED", "PENDING", "EXPIRED"],
+                },
+            },
+        });
+
+        return res.json(domains);
+    }
+
+    async getVerifiedDomains(req: Request, res: Response) {
+        let domains = await prisma.dappDomainVerify.findMany({
+            where: {
+                githubUserId: req.body.githubId,
+                status: {
+                    in: ["VERIFIED"],
+                },
+            },
+        });
+
+        return res.json(domains);
     }
 
     async checkDomainTxtRecords(

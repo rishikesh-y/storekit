@@ -111,10 +111,20 @@ routes.get(
     analyticsController.getRatingUser
 );
 
+routes.get(
+    "/pendingDomains",
+    body("githubId").isString().not().isEmpty(),
+    DomainVerificationController.getPendingDomains
+);
+routes.post(
+    "/verifiedDomains",
+    body("githubId").isString().not().isEmpty(),
+    DomainVerificationController.verify
+);
 routes.post(
     "/domainverification/:dappId/getVerificationId",
     body("githubId").isString().not().isEmpty(),
-    DomainVerificationController.getVerificationId
+    DomainVerificationController.getVerifiedDomains
 );
 routes.post(
     "/domainverification/:dappId/verify",
