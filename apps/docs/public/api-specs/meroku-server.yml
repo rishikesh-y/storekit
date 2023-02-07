@@ -44,9 +44,9 @@ info:
 
     1. I am getting a `400 Resource not accessible by integration` error on update calls.
 
-      This can happen when the github token supplied does not have valid permissions. Ensure that
-      you are not sending `org` param. Right now, the fork can only happen on individual and not
-      at org level.
+    This can happen when the github token supplied does not have valid permissions. Ensure that
+    you are not sending `org` param. Right now, the fork can only happen on individual and not
+    at org level.
 
 
 
@@ -75,7 +75,8 @@ paths:
       tags:
         - DApp Registry
       summary: Get dApp
-      description: Get all dApps or search by a keyword. Optionally, filter on specific attributes of the dApp.
+      description:
+        Get all dApps or search by a keyword. Optionally, filter on specific attributes of the dApp.
 
 
         This API call will get all the dApps or perform a text search.
@@ -83,7 +84,8 @@ paths:
       parameters:
         - in: query
           name: search
-          description: A string to be used for search. The search happens on the `name` and
+          description:
+            A string to be used for search. The search happens on the `name` and
             `tags` fields of the dApp. If this is not present, all dApps are returned.
           required: false
           schema:
@@ -170,7 +172,8 @@ paths:
         - in: query
           name: categories
           required: false
-          description: The categories in which dApps belong. Multiple categories are
+          description:
+            The categories in which dApps belong. Multiple categories are
             joined using OR operator.
           schema:
             type: array
@@ -270,7 +273,6 @@ paths:
           description: DApp not found
         "405":
           description: Validation exception
-
 
   /dapp/deleteApp:
     post:
@@ -459,99 +461,50 @@ paths:
                     type: string
                     format: uri
 
-  /dapp/{dappId}/upload/logo:
-   post:
+  /dapp/upload:
+    post:
       tags:
         - DApp Registry
-      summary: Generate PreSigned URL Logo
-      description: Generate pre signed URL for logo
-      operationId: uploadFileLogo
-      parameters:
-        - in: path
-          name: dappId
-          description: Dapp Id where upload will happen
-          required: true
-          schema:
-            type: string
+      summary: Upload dApp files
+      description: Uploading dapp screenshots | logo | banner | dApp file to the servers
+      operationId: dAppFiles
+      requestBody:
+        description: Send the request with following parameters
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                dappId:
+                  type: string
+                  description: "DApp Id is Key value of file in servers"
+                field:
+                  type: string
+                  description: "It tells about the dAppFiles content"
+                  enum:
+                    - build
+                    - screenshots
+                    - logo
+                    - banner
+                dAppFiles:
+                  type: array
+                  description: "Add files to upload"
+                  items:
+                    type: string
+                    format: binary
+        required: true
       responses:
         "200":
           description: Successful operation
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PreSignedUrlResponse"
-        "400":
-          description: Operation failed
-
-  /dapp/{dappId}/upload/screenshots:
-   post:
-      tags:
-        - DApp Registry
-      summary: Generate PreSigned URL screenshots
-      description: Generate pre signed URL for screenshots
-      operationId: uploadFileSS
-      parameters:
-        - in: path
-          name: dappId
-          description: Dapp Id where upload will happen
-          required: true
-          schema:
-            type: string
-      responses:
-        "200":
-          description: Successful operation
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/PreSignedUrlsResponse"
-        "400":
-          description: Operation failed
-
-  /dapp/{dappId}/upload/build:
-   post:
-      tags:
-        - DApp Registry
-      summary: Generate PreSigned URL Build
-      description: Generate pre signed URL for build
-      operationId: uploadFilebuild
-      parameters:
-        - in: path
-          name: dappId
-          description: Dapp Id where upload will happen
-          required: true
-          schema:
-            type: string
-      responses:
-        "200":
-          description: Successful operation
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/PreSignedUrlResponse"
-        "400":
-          description: Operation failed
-
-  /dapp/{dappId}/upload/banner:
-   post:
-      tags:
-        - DApp Registry
-      summary: Generate PreSigned URL Banner
-      description: Generate pre signed URL for banner
-      operationId: uploadFilebanner
-      parameters:
-        - in: path
-          name: dappId
-          description: Dapp Id where upload will happen
-          required: true
-          schema:
-            type: string
-      responses:
-        "200":
-          description: Successful operation
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/PreSignedUrlResponse"
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  url:
+                    type: string
         "400":
           description: Operation failed
 
@@ -574,7 +527,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PreSignedUrlResponse'
+                $ref: "#/components/schemas/PreSignedUrlResponse"
         "400":
           description: Operation failed
 
@@ -728,7 +681,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/DappVerify"
-
 
 components:
   schemas:
@@ -972,7 +924,7 @@ components:
           items:
             type: string
             example:
-            - https://meroku-app-images-dev.s3.amazonaws.com/asdf/logo?Content-Type=image%2F%2A&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=OAUBBB7%2F20230112%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20230112T083913Z&X-Amz-Expires=900&X-Amz-Signature=d3d42b06af1fe5afc83a6f89810c5e3ec1d88eff560&X-Amz-SignedHeaders=hos
+              - https://meroku-app-images-dev.s3.amazonaws.com/asdf/logo?Content-Type=image%2F%2A&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=OAUBBB7%2F20230112%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20230112T083913Z&X-Amz-Expires=900&X-Amz-Signature=d3d42b06af1fe5afc83a6f89810c5e3ec1d88eff560&X-Amz-SignedHeaders=hos
 
     PreSignedUrlResponse:
       type: object
@@ -1033,7 +985,7 @@ components:
               type: string
               format: binary
               description: A URL to the logo of the dApp. Should be square and 512x512 in PNG format
-              example: 'https://example.com/logo.png'
+              example: "https://example.com/logo.png"
             banner:
               type: string
               format: binary
@@ -1046,8 +998,8 @@ components:
                 type: string
                 format: binary
               example:
-              - https://www.example.com/screenshot_1.png
-              - https://www.example.com/screenshot_2.png
+                - https://www.example.com/screenshot_1.png
+                - https://www.example.com/screenshot_2.png
         repoUrl:
           type: string
           format: uri
@@ -1094,8 +1046,7 @@ components:
               - ios
               - web
               - android
-            example:
-              web
+            example: web
         geoRestrictions:
           type: object
           description: A list of countries where the dApp is available or unavailable. If this is not present, the dApp is available everywhere. If this is present, then one of either allowedCountries or blockedCountries should be present. If both are present, then the dApp is available in allowedCountries and unavailable in blockedCountries. The name of countries should be in ISO-3661-1 Alpha-2 Code.
@@ -1159,17 +1110,18 @@ components:
           items:
             type: string
           example:
-          - nft maker
+            - nft maker
         chains:
           type: array
           items:
             type: integer
           example:
-          - 1
-          - 137
+            - 1
+            - 137
         category:
           type: string
-          description: The category of the dApp. You can assign one category to your dApp.
+          description:
+            The category of the dApp. You can assign one category to your dApp.
             The category you select is particularly important for your app's discoverability on
             the dApp Store. This will be the category in which the app appears when users browse
             the dApp Store or filter search results, and it determines placement on the dApps tab

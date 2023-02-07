@@ -1,13 +1,10 @@
+/* eslint-disable turbo/no-undeclared-env-vars */
 import { Request, Response } from "express";
 import Dotenv from "dotenv";
 import AWS from "aws-sdk";
-import Debug from "debug";
-import { S3Client, GetObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 
 Dotenv.config();
-
-const debug = Debug("meroku:server");
 
 const s3 = new AWS.S3({
   signatureVersion: "v4",
@@ -20,75 +17,104 @@ const s3Client = new S3Client({
   region: process.env.AWS_S3_REGION,
   credentials: {
     accessKeyId: process.env.AWS_KEY,
-    secretAccessKey: process.env.AWS_SECRET
-  }
+    secretAccessKey: process.env.AWS_SECRET,
+  },
 });
 
 export const getBuildDownloadPreSignedUrl = (dappId: string) => {
   return s3.getSignedUrl("getObject", {
-  Bucket: process.env.BUCKET_NAME_PRIVATE,
-  Key: `${dappId}/build.zip`,
-  Expires: 60 * 15 // 15 minutes,
-});
+    Bucket: process.env.BUCKET_NAME_PRIVATE,
+    Key: `${dappId}/build.zip`,
+    Expires: 60 * 15, // 15 minutes,
+  });
 };
 
 class awsS3Controller {
   constructor() {
     this.getPreSignedBuildUrl = this.getPreSignedBuildUrl.bind(this);
-    this.updateFile = this.updateFile.bind(this);
     this.deleteFile = this.deleteFile.bind(this);
   }
 
   /**
-  * File upload to aws-s3 servers
-  */
- preSignedUrlUpload = async (req: Request, res: Response) => {
-    const dappID = req.params.dappId;
-    const field = req.params.field;
+   * File upload to aws-s3 servers
+   */
+  fileUploads = async (req: Request, res: Response) => {
+    const dappID = req.body.dappId;
+    const field = req.body.field;
 
     let bucket = process.env.BUCKET_NAME_PUBLIC;
-    let contentType = 'image/*';
-    let contentDisposition = 'inline';
+    let files: any = req.files;
+    let contentType = files[0].mimetype;
+    let contentDisposition = "inline";
     let key = `${dappID}/${field}`;
+    let extension = ".png";
+    let response;
 
     if (field === "build") {
       bucket = process.env.BUCKET_NAME_PRIVATE;
-      contentType = 'application/zip';
-      contentDisposition = 'attachment; filename=build.zip';
-      key += '.zip';
-    } else {
-      key += '.png';
-    }
 
-    try {
-      if (field === "screenshots") {
-        const urls = new Array<string>();
-        for (const x of [...Array(5).keys()]) {
-          urls.push(await getSignedUrl(s3Client, new PutObjectCommand({
-            Bucket: bucket,
-            Key: `${dappID}/${field}-${x}.png`,
-            ContentType: contentType
-          }), { expiresIn: 60 * 15 }));
-        }
-        return res.status(200).json({ success: true, urls: urls });
+      if (contentType == "application/zip") {
+        contentDisposition = "attachment; filename=build.zip";
+        extension = ".zip";
       }
 
-      const command = new PutObjectCommand({
-        Bucket: bucket,
-        Key: key,
-        ContentType: contentType
-      })
-      const url = await getSignedUrl(s3Client, command, { expiresIn: 60 * 15 });
-      return res.status(200).json({ success: true, url: url });
+      if (contentType == "application/vnd.android.package-archive") {
+        contentDisposition = "attachment; filename=build.apk";
+        extension = ".apk";
+      }
+    } else {
+      if (contentType == "image/jpeg") extension = ".jpeg";
+      if (contentType == "image/webp") extension = ".webp";
+      if (contentType == "image/svg") extension = ".svg";
+      if (contentType == "image/jpg") extension = ".jpg";
+      if (contentType == "image/png") extension = ".png";
+    }
+
+    key += extension;
+
+    var buffers: [] = files.map(
+      (element: { buffer: string }) => element.buffer
+    );
+
+    try {
+      // maximum count for screenshots is 5
+      if (field === "screenshots" && buffers.length <= 5) {
+        for (var i = 0; i < buffers.length; i++) {
+          const uploadCommand = new PutObjectCommand({
+            Bucket: bucket,
+            Key: `${dappID}/${field}-${i}${extension}`,
+            Body: buffers[i],
+            ContentType: contentType,
+          });
+          response = await s3Client.send(uploadCommand);
+        }
+        const url = getBuildDownloadPreSignedUrl(dappID);
+        return res.status(200).json({ success: true, url: url });
+      }
+      // maximum count for logo, banner & dApp is 1
+      if (buffers.length > 1)
+        res.status(400).json({
+          errors: [{ msg: "Maximum count for logo, banner, & dApp is 1" }],
+        });
+      else {
+        const command = new PutObjectCommand({
+          Bucket: bucket,
+          Key: key,
+          ContentType: contentType,
+        });
+        response = await s3Client.send(command);
+        const url = getBuildDownloadPreSignedUrl(dappID);
+        return res.status(200).json({ success: true, url: url });
+      }
     } catch (e) {
       return res.status(400).json({ errors: [{ msg: e.message }] });
     }
- }
+  };
 
   /**
-  * Get file presigned url from aws-s3 servers
-  * @param params eg: { Bucket: "bucketName", Key: "objectKey",}
-  */
+   * Get file presigned url from aws-s3 servers
+   * @param params eg: { Bucket: "bucketName", Key: "objectKey",}
+   */
   getPreSignedBuildUrl = async (req: Request, res: Response) => {
     try {
       const url = getBuildDownloadPreSignedUrl(req.params.dappId);
@@ -100,33 +126,9 @@ class awsS3Controller {
   };
 
   /**
-  * Update file from aws s3 servers
-  * @param params eg: { Bucket: "bucketName", Key: "objectKey",} & file
-  */
-
-  updateFile = async (req: Request, res: Response) => {
-    const params: AWS.S3.DeleteObjectRequest = {
-      Bucket: process.env.BUCKET_NAME_PRIVATE,
-      Key: <string>req.body.dappId,
-    };
-
-    try {
-      await s3
-        .deleteObject(params)
-        .promise()
-        .then(() => {
-        });
-
-      return res.status(200).json({ success: true, file: req.file });
-    } catch (e) {
-      return res.status(400).json({ errors: [{ msg: e.message }] });
-    }
-  };
-
-  /**
-  * Delete file from aws s3 servers
-  * @param params eg: { Bucket: "bucketName", Key: "objectKey",}
-  */
+   * Delete file from aws s3 servers
+   * @param params eg: { Bucket: "bucketName", Key: "objectKey",}
+   */
   deleteFile = async (req: Request, res: Response) => {
     const params: AWS.S3.DeleteObjectRequest = {
       Bucket: process.env.BUCKET_NAME_PRIVATE,
@@ -137,21 +139,6 @@ class awsS3Controller {
       return res.json(response);
     } catch (e) {
       return res.status(400).json({ errors: [{ msg: e.message }] });
-    }
-  };
-
-  /**
-  * Get only metadata of a file without loading it
-  * @param s3Data eg: { Bucket: "bucketName", Key: "objectKey", ACL: "public-read",
-                    Body: JSON.stringify(dataObject), ContentType: "application/json",
-                    Metadata: { email: "sample@gmail.com", dappId: "300",},
-                }
-  */
-  getMetaData = async (s3Data: AWS.S3.HeadObjectRequest) => {
-    try {
-      await s3.headObject(s3Data).promise();
-    } catch (e) {
-      debug(e.message);
     }
   };
 }
