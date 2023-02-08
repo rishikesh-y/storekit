@@ -113,18 +113,22 @@ class DappRegistry {
 
       // Pagination
       let limit = parseInt(<string>req.query.limit);
-      let page = parseInt(<string>req.query.page);
-      const pageCount = Math.ceil(response.length / limit);
+      if (!limit) {
+        limit = 10;
+      }
 
+      let page = parseInt(<string>req.query.page);
       if (!page) {
         page = 1;
       }
+
+      const pageCount = Math.ceil(response.length / limit);
+
       if (page > pageCount) {
         page = pageCount;
       }
 
       response = response.slice(page * limit - limit, page * limit);
-
       const metrics = await getMetrics(response.map((dapp) => dapp.dappId));
       response = response.map((dapp) => {
         const metric = metrics.find((m) => m.dappId === dapp.dappId);
@@ -136,6 +140,7 @@ class DappRegistry {
 
       return res.json({
         page: page,
+        limit: limit,
         pageCount: pageCount,
         response: response,
       });
