@@ -7,7 +7,7 @@ import {
   StoreRegistryController,
   analyticsController,
 } from "./controllers";
-import { body, query, header, validationResult } from "express-validator";
+import { body, query } from "express-validator";
 import multer from "multer";
 
 const routes = Router();
@@ -97,11 +97,6 @@ routes.get("/app/:githubID/installed", GhAppController.isAppInstalled);
 routes.get("/app/installUrl", GhAppController.getInstallURL);
 
 routes.post(
-  "/dapp/:dappId/upload/:field",
-  DappFileUploadController.preSignedUrlUpload
-);
-
-routes.get(
   "/dapp/upload",
   upload.array("dAppFiles"),
   body("dappId").isString().not().isEmpty(),
