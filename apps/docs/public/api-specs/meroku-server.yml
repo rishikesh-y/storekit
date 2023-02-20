@@ -52,13 +52,13 @@ info:
 
     2. I am getting a `400 Not Found` error on update calls.
 
-      Ensure that you are passing the correct github ID or the user who wants to make the update.
+    Ensure that you are passing the correct github ID or the user who wants to make the update.
 
 
     3. I am getting `400 Bad Credentials`.
 
-      This can happen when the github token supplied is invalid. Ensure that you are sending the
-      correct token. If the token is correct, then try signing out and signing in."
+    This can happen when the github token supplied is invalid. Ensure that you are sending the
+    correct token. If the token is correct, then try signing out and signing in."
 servers:
   - url: https://api-a.meroku.store
     description: Testing Server
@@ -82,6 +82,18 @@ paths:
         This API call will get all the dApps or perform a text search.
       operationId: getDApp
       parameters:
+        - in: query
+          name: page
+          description: Current page
+          required: false
+          schema:
+            type: integer
+        - in: query
+          name: limit
+          description: Page size
+          required: false
+          schema:
+            type: integer
         - in: query
           name: search
           description:
@@ -214,9 +226,20 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Dapp"
+                type: object
+                properties:
+                  page:
+                    type: integer
+                    description: Current page.
+                  limit:
+                    type: integer
+                    description: Page size.
+                  pageCount:
+                    type: integer
+                  response:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Dapp"
         "400":
           description: Invalid status value
 
@@ -631,7 +654,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/DappRating"
-                
+
   /domainverification/:dappId/getVerificationId:
     post:
       tags:
@@ -656,7 +679,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/DappGetVerificationId"
-                
+
   /domainverification/:dappId/verify:
     post:
       tags:
