@@ -127,19 +127,21 @@ routes.get(
   body("githubId").isString().not().isEmpty(),
   DomainVerificationController.getPendingDomains
 );
-routes.post(
+routes.get(
   "/verifiedDomains",
-  body("githubId").isString().not().isEmpty(),
-  DomainVerificationController.verify
-);
-routes.post(
-  "/domainverification/:dappId/getVerificationId",
   body("githubId").isString().not().isEmpty(),
   DomainVerificationController.getVerifiedDomains
 );
 routes.post(
-  "/domainverification/:dappId/verify",
+  "/domainverification/getVerificationId",
   body("githubId").isString().not().isEmpty(),
+  body("domain").isString().not().isEmpty(),
+  DomainVerificationController.getVerificationId
+);
+routes.post(
+  "/domainverification/verify",
+  body("githubId").isString().not().isEmpty(),
+  body("domain").isString().not().isEmpty(),
   DomainVerificationController.verify
 );
 
