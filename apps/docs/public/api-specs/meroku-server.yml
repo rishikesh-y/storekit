@@ -655,22 +655,25 @@ paths:
               schema:
                 $ref: "#/components/schemas/DappRating"
 
-  /domainverification/:dappId/getVerificationId:
+  /domainverification/getVerificationId:
     post:
       tags:
         - Domain Verification
       summary: Get a domain verification code
       description: Use this to get a domain verification to code to verify domain ownership.
       requestBody:
-        description: Send the request with githubId
+        description: Send the request with githubId and domain.
         content:
           application/json:
             schema:
               type: object
               required:
                 - githubId
+                - domain
               properties:
                 githubId:
+                  type: string
+                domain:
                   type: string
       responses:
         "200":
@@ -680,22 +683,25 @@ paths:
               schema:
                 $ref: "#/components/schemas/DappGetVerificationId"
 
-  /domainverification/:dappId/verify:
+  /domainverification/verify:
     post:
       tags:
         - Domain Verification
       summary: Verify domain txt records.
       description: Use this to verify your domain ownership.
       requestBody:
-        description: Send the request with githubId
+        description: Send the request with githubId and domain.
         content:
           application/json:
             schema:
               type: object
               required:
                 - githubId
+                - domain
               properties:
                 githubId:
+                  type: string
+                domain:
                   type: string
       responses:
         "200":

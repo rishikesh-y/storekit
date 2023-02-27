@@ -38,16 +38,14 @@ model DappInstall {
 
 model DappDomainVerify {
   id               Int              @id @default(autoincrement())
-  dappId           String           @db.VarChar
   domain           String           @db.VarChar
   verificationCode String           @db.VarChar
   githubUserId     String           @db.VarChar
   verificationDate DateTime?        @db.Timestamp(6)
   status           DappDomainStatus @default(NOT_STARTED)
 
-  @@unique([dappId, githubUserId], map: "dapp_github")
-  @@unique([dappId, verificationCode], map: "dapp_code")
-  @@index([dappId])
+  @@unique([domain, githubUserId], map: "domain_github")
+  @@unique([domain, verificationCode], map: "domain_code")
   @@index([domain])
   @@index([githubUserId])
   @@index([status])

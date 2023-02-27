@@ -3,6 +3,7 @@ import cors from "cors";
 import { Server } from "http";
 import routes from "./routes";
 import { prisma } from "./utils/prisma";
+import * as bodyParser from 'body-parser';
 
 export class App {
   public server;
@@ -32,6 +33,13 @@ export class App {
 
   middleware() {
     this.server.use(express.json());
+    this.server.use(bodyParser.json());
+    this.server.use(
+      bodyParser.urlencoded({
+        // to support URL-encoded bodies
+        extended: true
+      })
+    );
   }
 
   routes() {
