@@ -24,7 +24,7 @@ class DomainVerification {
 
     let domains = await prisma.dappDomainVerify.findMany({
       where: {
-        githubUserId: req.body.githubId,
+        githubUserId: req.query.githubId as string,
         status: {
           in: ["NOT_STARTED", "PENDING"],
         },
@@ -42,7 +42,7 @@ class DomainVerification {
 
     const domains = await prisma.dappDomainVerify.findMany({
       where: {
-        githubUserId: req.body.githubId,
+        githubUserId: req.query.githubId as string,
         status: {
           in: ["VERIFIED"],
         },
