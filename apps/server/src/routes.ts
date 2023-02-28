@@ -124,12 +124,12 @@ routes.get(
 
 routes.get(
   "/pendingDomains",
-  body("githubId").isString().not().isEmpty(),
+  query("githubId").isString().not().isEmpty(),
   DomainVerificationController.getPendingDomains
 );
 routes.get(
   "/verifiedDomains",
-  body("githubId").isString().not().isEmpty(),
+  query("githubId").isString().not().isEmpty(),
   DomainVerificationController.getVerifiedDomains
 );
 routes.post(
