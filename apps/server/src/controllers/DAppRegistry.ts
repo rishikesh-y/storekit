@@ -15,6 +15,7 @@ class DappRegistry {
     this.addDapp = this.addDapp.bind(this);
     this.updateDapp = this.updateDapp.bind(this);
     this.deleteDapp = this.deleteDapp.bind(this);
+    this.searchByDappId = this.searchByDappId.bind(this);
   }
 
   getDapps = async (req: Request, res: Response) => {
@@ -250,6 +251,30 @@ class DappRegistry {
           githubID,
           dappId
         );
+        return res.json(response);
+      } catch (e) {
+        return res.status(400).json({ errors: [{ msg: e.message }] });
+      }
+    } else {
+      // errors
+      debug(`Validation errors: ${result}`);
+      return res.status(400).json({ errors: [{ msg: result }] });
+    }
+  };
+
+  searchByDappId = async (req: Request, res: Response) => {
+    const result = validationResult(req);
+    if (result.isEmpty()) {
+      // no errors
+      const dappId: string = req.query.dappId as string;
+      try {
+        await DappStore.init();
+        const response = await DappStore.searchByDappId(dappId);
+        if(response.length === 0){
+          return res.status(404).json({
+            Message: "Dapp Not Found"
+          })
+        }
         return res.json(response);
       } catch (e) {
         return res.status(400).json({ errors: [{ msg: e.message }] });

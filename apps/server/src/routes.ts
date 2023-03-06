@@ -92,6 +92,13 @@ routes.post(
   DappRegistryController.deleteDapp
 );
 
+// Search Dapp by ID
+routes.get(
+  "/dapp/searchById",
+  query("dappId").not().isEmpty().withMessage("Missing dappId field"),
+  DappRegistryController.searchByDappId
+);
+
 routes.get("/app/:githubID/installed", GhAppController.isAppInstalled);
 
 routes.get("/app/installUrl", GhAppController.getInstallURL);
