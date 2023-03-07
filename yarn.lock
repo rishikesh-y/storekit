@@ -1386,10 +1386,10 @@
     semver "^7.3.5"
     tar "^6.1.11"
 
-"@merokudao/dapp-store-registry@^0.1.27":
-  version "0.1.27"
-  resolved "https://registry.yarnpkg.com/@merokudao/dapp-store-registry/-/dapp-store-registry-0.1.27.tgz#ce17e440406b0f29d0a58eaa9daa1306d92fa0ba"
-  integrity sha512-L8OQpqQPBD0I37ZSN2AWS3LJH2nhC53zxlUM1xcIiK7FF9KDj1ljyXLDEPuhw9jgsy1htZjR56k5Zt1UFurbcQ==
+"@merokudao/dapp-store-registry@^0.1.28":
+  version "0.1.28"
+  resolved "https://registry.yarnpkg.com/@merokudao/dapp-store-registry/-/dapp-store-registry-0.1.28.tgz#9ca88c48773e189eee16739e595daba652876c8a"
+  integrity sha512-7HSGmOGWz2FGp+1wq0mqskGq/jtXV9tFoFs2Zlbr3kCKHCMSB2+GGuDSoM0sSqtQozoa1CM9Q1bLdm47Pxqj0Q==
   dependencies:
     "@stdlib/nlp-porter-stemmer" "^0.0.7"
     ajv "^8.11.2"
@@ -1400,7 +1400,7 @@
     date-fns "^2.29.3"
     debug "^4.3.4"
     fs-extra "^11.1.0"
-    js-search "^2.0.0"
+    minisearch "^6.0.1"
     octokit "^2.0.10"
 
 "@next/env@13.0.0":
@@ -6267,11 +6267,6 @@ js-sdsl@^4.1.4:
   resolved "https://registry.npmjs.org/js-sdsl/-/js-sdsl-4.2.0.tgz"
   integrity sha512-dyBIzQBDkCqCu+0upx25Y2jGdbTGxE9fshMsCdK0ViOongpV+n5tXRcZY9v7CaVQ79AGS9KA1KHtojxiM7aXSQ==
 
-js-search@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/js-search/-/js-search-2.0.0.tgz#84dc9d44e34ca0870d067e04b86d8038b77edc26"
-  integrity sha512-lJ8KzjlwcelIWuAdKyzsXv45W6OIwRpayzc7XmU8mzgWadg5UVOKVmnq/tXudddEB9Ceic3tVaGu6QOK/eebhg==
-
 js-sha3@0.8.0:
   version "0.8.0"
   resolved "https://registry.npmjs.org/js-sha3/-/js-sha3-0.8.0.tgz"
@@ -6871,6 +6866,11 @@ minipass@^4.0.0:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/minipass/-/minipass-4.0.1.tgz#2b9408c6e81bb8b338d600fb3685e375a370a057"
   integrity sha512-V9esFpNbK0arbN3fm2sxDKqMYgIp7XtVdE4Esj+PE4Qaaxdg1wIw48ITQIOn1sc8xXSmUviVL3cyjMqPlrVkiA==
+
+minisearch@^6.0.1:
+  version "6.0.1"
+  resolved "https://registry.yarnpkg.com/minisearch/-/minisearch-6.0.1.tgz#55e40135e7e6be60f1c1c2f5ee890c334e179a86"
+  integrity sha512-Ly1w0nHKnlhAAh6/BF/+9NgzXfoJxaJ8nhopFhQ3NcvFJrFIL+iCg9gw9e9UMBD+XIsp/RyznJ/o5UIe5Kw+kg==
 
 minizlib@^2.1.1:
   version "2.1.2"
