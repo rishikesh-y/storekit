@@ -1386,10 +1386,10 @@
     semver "^7.3.5"
     tar "^6.1.11"
 
-"@merokudao/dapp-store-registry@^0.1.26":
-  version "0.1.26"
-  resolved "https://registry.yarnpkg.com/@merokudao/dapp-store-registry/-/dapp-store-registry-0.1.26.tgz#5b327a1918895245dd06a60e1508a9d3af9c107f"
-  integrity sha512-m2wHXiCi+CMEbxugX/PwQ9opcSlsc5oYPrcOg+fcxv7JTWavsohu19LRn4zH9Q/QodcDUvuhoPl5UOfpnn2Wgg==
+"@merokudao/dapp-store-registry@^0.1.28":
+  version "0.1.28"
+  resolved "https://registry.yarnpkg.com/@merokudao/dapp-store-registry/-/dapp-store-registry-0.1.28.tgz#9ca88c48773e189eee16739e595daba652876c8a"
+  integrity sha512-7HSGmOGWz2FGp+1wq0mqskGq/jtXV9tFoFs2Zlbr3kCKHCMSB2+GGuDSoM0sSqtQozoa1CM9Q1bLdm47Pxqj0Q==
   dependencies:
     "@stdlib/nlp-porter-stemmer" "^0.0.7"
     ajv "^8.11.2"
@@ -1400,7 +1400,7 @@
     date-fns "^2.29.3"
     debug "^4.3.4"
     fs-extra "^11.1.0"
-    js-search "^2.0.0"
+    minisearch "^6.0.1"
     octokit "^2.0.10"
 
 "@next/env@13.0.0":
@@ -1745,9 +1745,9 @@
     deprecation "^2.3.1"
 
 "@octokit/plugin-retry@^4.0.3":
-  version "4.1.1"
-  resolved "https://registry.yarnpkg.com/@octokit/plugin-retry/-/plugin-retry-4.1.1.tgz#2a96e97219f6506d636b4de696cf368da44a8e20"
-  integrity sha512-iR7rg5KRSl6L6RELTQQ3CYeNgeBJyuAmP95odzcQ/zyefnRT/Peo8rWeky4z7V/+/oPWqOL4I5Z+V8KtjpHCJw==
+  version "4.1.3"
+  resolved "https://registry.yarnpkg.com/@octokit/plugin-retry/-/plugin-retry-4.1.3.tgz#c717d7908be26a5570941d9688e3e8a3da95e714"
+  integrity sha512-3YKBj7d0J/4mpEc4xzMociWsMNl5lZqrpAnYcW6mqiSGF3wFjU+c6GHih6GLClk31JNvKDr0x9jc5cfm7evkZg==
   dependencies:
     "@octokit/types" "^9.0.0"
     bottleneck "^2.15.3"
@@ -2313,7 +2313,7 @@
     "@stdlib/utils-noop" "^0.0.x"
     minimist "^1.2.0"
 
-"@stdlib/complex-float32@^0.0.x":
+"@stdlib/complex-float32@^0.0.7", "@stdlib/complex-float32@^0.0.x":
   version "0.0.7"
   resolved "https://registry.yarnpkg.com/@stdlib/complex-float32/-/complex-float32-0.0.7.tgz#fb9a0c34254eaf3ed91c39983e19ef131fc18bc1"
   integrity sha512-POCtQcBZnPm4IrFmTujSaprR1fcOFr/MRw2Mt7INF4oed6b1nzeG647K+2tk1m4mMrMPiuXCdvwJod4kJ0SXxQ==
@@ -2324,7 +2324,7 @@
     "@stdlib/utils-define-property" "^0.0.x"
     "@stdlib/utils-library-manifest" "^0.0.x"
 
-"@stdlib/complex-float64@^0.0.x":
+"@stdlib/complex-float64@^0.0.8", "@stdlib/complex-float64@^0.0.x":
   version "0.0.8"
   resolved "https://registry.yarnpkg.com/@stdlib/complex-float64/-/complex-float64-0.0.8.tgz#00ee3a0629d218a01b830a20406aea7d7aff6fb3"
   integrity sha512-lUJwsXtGEziOWAqCcnKnZT4fcVoRsl6t6ECaCJX45Z7lAc70yJLiwUieLWS5UXmyoADHuZyUXkxtI4oClfpnaw==
@@ -2335,7 +2335,7 @@
     "@stdlib/utils-define-property" "^0.0.x"
     "@stdlib/utils-library-manifest" "^0.0.x"
 
-"@stdlib/complex-reim@^0.0.x":
+"@stdlib/complex-reim@^0.0.6":
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/@stdlib/complex-reim/-/complex-reim-0.0.6.tgz#9657971e36f2a1f1930a21249c1934c8c5087efd"
   integrity sha512-28WXfPSIFMtHb0YgdatkGS4yxX5sPYea5MiNgqPv3E78+tFcg8JJG52NQ/MviWP2wsN9aBQAoCPeu8kXxSPdzA==
@@ -2345,7 +2345,7 @@
     "@stdlib/types" "^0.0.x"
     "@stdlib/utils-library-manifest" "^0.0.x"
 
-"@stdlib/complex-reimf@^0.0.x":
+"@stdlib/complex-reimf@^0.0.1":
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/@stdlib/complex-reimf/-/complex-reimf-0.0.1.tgz#6797bc1bfb668a30511611f2544d0cff4d297775"
   integrity sha512-P9zu05ZW2i68Oppp3oHelP7Tk0D7tGBL0hGl1skJppr2vY9LltuNbeYI3C96tQe/7Enw/5GyAWgxoQI4cWccQA==
@@ -2411,15 +2411,15 @@
     "@stdlib/math-base-special-floor" "^0.0.x"
 
 "@stdlib/math-base-napi-unary@^0.0.x":
-  version "0.0.8"
-  resolved "https://registry.yarnpkg.com/@stdlib/math-base-napi-unary/-/math-base-napi-unary-0.0.8.tgz#4a6719886caa96bcfb67648c368a84b47072be6f"
-  integrity sha512-xKbGBxbgrEe7dxCDXJrooXPhXSDUl/QPqsN74Qa0+8Svsc4sbYVdU3yHSN5vDgrcWt3ZkH51j0vCSBIjvLL15g==
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/@stdlib/math-base-napi-unary/-/math-base-napi-unary-0.0.9.tgz#3a70fa64128aca7011c5a477110d2682d06c8ea8"
+  integrity sha512-2WNKhjCygkGMp0RgjaD7wAHJTqPZmuVW7yPOc62Tnz2U+Ad8q/tcOcN+uvq2dtKsAGr1HDMIQxZ/XrrThMePyA==
   dependencies:
-    "@stdlib/complex-float32" "^0.0.x"
-    "@stdlib/complex-float64" "^0.0.x"
-    "@stdlib/complex-reim" "^0.0.x"
-    "@stdlib/complex-reimf" "^0.0.x"
-    "@stdlib/utils-library-manifest" "^0.0.x"
+    "@stdlib/complex-float32" "^0.0.7"
+    "@stdlib/complex-float64" "^0.0.8"
+    "@stdlib/complex-reim" "^0.0.6"
+    "@stdlib/complex-reimf" "^0.0.1"
+    "@stdlib/utils-library-manifest" "^0.0.8"
 
 "@stdlib/math-base-special-floor@^0.0.x":
   version "0.0.8"
@@ -2639,7 +2639,7 @@
   dependencies:
     "@stdlib/assert-is-boolean" "^0.0.x"
 
-"@stdlib/utils-library-manifest@^0.0.x":
+"@stdlib/utils-library-manifest@^0.0.8", "@stdlib/utils-library-manifest@^0.0.x":
   version "0.0.8"
   resolved "https://registry.yarnpkg.com/@stdlib/utils-library-manifest/-/utils-library-manifest-0.0.8.tgz#61d3ed283e82c8f14b7f952d82cfb8e47d036825"
   integrity sha512-IOQSp8skSRQn9wOyMRUX9Hi0j/P5v5TvD8DJWTqtE8Lhr8kVVluMBjHfvheoeKHxfWAbNHSVpkpFY/Bdh/SHgQ==
@@ -2664,9 +2664,9 @@
   integrity sha512-l+hPl7+CgLPxk/gcWOXRxX/lNyfqcFCqhzzV/ZMvFCYLY/wI9lcWO4xTQNMALY2rp+kiV+qiAiO9zcO+hewwUg==
 
 "@stdlib/utils-noop@^0.0.x":
-  version "0.0.13"
-  resolved "https://registry.yarnpkg.com/@stdlib/utils-noop/-/utils-noop-0.0.13.tgz#d8b113c605d327d786106448571c44b0f070751d"
-  integrity sha512-JRWHGWYWP5QK7SQ2cOYiL8NETw8P33LriZh1p9S2xC4e0rBoaY849h1A2IL2y1+x3s29KNjSaBWMrMUIV5HCSw==
+  version "0.0.14"
+  resolved "https://registry.yarnpkg.com/@stdlib/utils-noop/-/utils-noop-0.0.14.tgz#8a2077fae0877c4c9e4c5f72f3c9284ca109d4c3"
+  integrity sha512-A5faFEUfszMgd93RCyB+aWb62hQxgP+dZ/l9rIOwNWbIrCYNwSuL4z50lNJuatnwwU4BQ4EjQr+AmBsnvuLcyQ==
 
 "@stdlib/utils-regexp-from-string@^0.0.x":
   version "0.0.9"
@@ -3050,9 +3050,9 @@
   integrity sha512-yOlFc+7UtL/89t2ZhjPvvB/DeAr3r+Dq58IgzsFkOAvVC6NMJXmCGjbptdXdR9qsX7pKcTL+s87FtYREi2dEEQ==
 
 "@types/aws-lambda@^8.10.83":
-  version "8.10.110"
-  resolved "https://registry.yarnpkg.com/@types/aws-lambda/-/aws-lambda-8.10.110.tgz#32a1f9d40b855d69830243492bbb6408098f4c88"
-  integrity sha512-r6egf2Cwv/JaFTTrF9OXFVUB3j/SXTgM9BwrlbBRjWAa2Tu6GWoDoLflppAZ8uSfbUJdXvC7Br3DjuN9pQ2NUQ==
+  version "8.10.111"
+  resolved "https://registry.yarnpkg.com/@types/aws-lambda/-/aws-lambda-8.10.111.tgz#9107c405f3011a5c423b5ac93fbf279439558571"
+  integrity sha512-8HR9UjIKmoemEzE2BviVtFkeenxfbizSu8raFjnT2VXxguZZ2JTlNww7INOH7IA0J/zRa3TjOftkYq6hVNkxDA==
 
 "@types/bcrypt@^5.0.0":
   version "5.0.0"
@@ -3743,9 +3743,9 @@ axios@^0.21.0:
     follow-redirects "^1.14.0"
 
 axios@^1.2.1:
-  version "1.2.5"
-  resolved "https://registry.yarnpkg.com/axios/-/axios-1.2.5.tgz#858c129d286e7ee3b1e970961cde410ba3ea3740"
-  integrity sha512-9pU/8mmjSSOb4CXVsvGIevN+MlO/t9OWtKadTaLuN85Gge3HGorUckgp8A/2FH4V4hJ7JuQ3LIeI7KAV9ITZrQ==
+  version "1.3.4"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-1.3.4.tgz#f5760cefd9cfb51fd2481acf88c05f67c4523024"
+  integrity sha512-toYm+Bsyl6VC5wSkfkbbNB6ROv7KY93PEBBL6xyDczaIHasAiv4wPqQ/c4RjoQzipxRD2W5g21cOqQulZ7rHwQ==
   dependencies:
     follow-redirects "^1.15.0"
     form-data "^4.0.0"
@@ -6267,11 +6267,6 @@ js-sdsl@^4.1.4:
   resolved "https://registry.npmjs.org/js-sdsl/-/js-sdsl-4.2.0.tgz"
   integrity sha512-dyBIzQBDkCqCu+0upx25Y2jGdbTGxE9fshMsCdK0ViOongpV+n5tXRcZY9v7CaVQ79AGS9KA1KHtojxiM7aXSQ==
 
-js-search@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/js-search/-/js-search-2.0.0.tgz#84dc9d44e34ca0870d067e04b86d8038b77edc26"
-  integrity sha512-lJ8KzjlwcelIWuAdKyzsXv45W6OIwRpayzc7XmU8mzgWadg5UVOKVmnq/tXudddEB9Ceic3tVaGu6QOK/eebhg==
-
 js-sha3@0.8.0:
   version "0.8.0"
   resolved "https://registry.npmjs.org/js-sha3/-/js-sha3-0.8.0.tgz"
@@ -6871,6 +6866,11 @@ minipass@^4.0.0:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/minipass/-/minipass-4.0.1.tgz#2b9408c6e81bb8b338d600fb3685e375a370a057"
   integrity sha512-V9esFpNbK0arbN3fm2sxDKqMYgIp7XtVdE4Esj+PE4Qaaxdg1wIw48ITQIOn1sc8xXSmUviVL3cyjMqPlrVkiA==
+
+minisearch@^6.0.1:
+  version "6.0.1"
+  resolved "https://registry.yarnpkg.com/minisearch/-/minisearch-6.0.1.tgz#55e40135e7e6be60f1c1c2f5ee890c334e179a86"
+  integrity sha512-Ly1w0nHKnlhAAh6/BF/+9NgzXfoJxaJ8nhopFhQ3NcvFJrFIL+iCg9gw9e9UMBD+XIsp/RyznJ/o5UIe5Kw+kg==
 
 minizlib@^2.1.1:
   version "2.1.2"
