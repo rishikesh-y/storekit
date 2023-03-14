@@ -64,7 +64,7 @@ class AnalyticsController {
             !dapp.appUrl ||
             (!dapp.appUrl.endsWith(".zip") && !dapp.appUrl.endsWith(".apk"))
         ) {
-            return res.status(404).send("No App Download URL found");
+            return res.status(404).send("No build for this dApp. Try viewing instead");
         }
         await registerDownload(
             dappId,
