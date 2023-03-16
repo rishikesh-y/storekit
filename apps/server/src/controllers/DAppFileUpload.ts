@@ -29,7 +29,7 @@ const s3Client = new S3Client({
   },
 });
 
-export const getBuildDownloadPreSignedUrl = (dappId: string) => {
+export const getDownloadURL = (dappId: string) => {
   return s3.getSignedUrl("getObject", {
     Bucket: process.env.BUCKET_NAME_PRIVATE,
     Key: `${dappId}/build.zip`,
@@ -97,6 +97,10 @@ class awsS3Controller {
           });
         }
         return res.status(200).json({ success: true, data: urls });
+      } else if (field === "screenshots" && req.files.length > 5) {
+        res.status(400).json({
+          errors: [{ msg: "Maximum count for screenshots is 5" }],
+        });
       }
       // maximum count for logo, banner & dApp is 1
       if (req.files.length > 1)
@@ -109,7 +113,9 @@ class awsS3Controller {
           bucket,
           key,
           contentType,
-          filePath
+          filePath,
+          field,
+          dappID
         );
         return res.status(200).json({
           success: true,
@@ -133,14 +139,23 @@ class awsS3Controller {
     bucket: string,
     key: string,
     contentType: string,
-    filePath: string
+    filePath: string,
+    field?: string,
+    dappId?: string
   ) => {
     const uploadService = process.env.UPLOAD_SERVICE
       ? process.env.UPLOAD_SERVICE
       : "ipfs";
     switch (uploadService) {
       case "aws-s3":
-        return await this.fileUploadsToS3(bucket, key, contentType, filePath);
+        return await this.fileUploadsToS3(
+          bucket,
+          key,
+          contentType,
+          filePath,
+          field,
+          dappId
+        );
       case "ipfs":
         return await this.fileUploadToIPFS(filePath);
       default:
@@ -155,7 +170,9 @@ class awsS3Controller {
     bucket: string,
     key: string,
     contentType: string,
-    filePath: string
+    filePath: string,
+    field: string,
+    dappId: string
   ) => {
     try {
       const uploadCommand = {
@@ -165,6 +182,9 @@ class awsS3Controller {
         ContentType: contentType,
       };
       const response = await s3.upload(uploadCommand).promise();
+      if (field === "build") {
+        return getDownloadURL(dappId);
+      }
       return response.Location;
     } catch (e) {
       return e;
@@ -195,7 +215,7 @@ class awsS3Controller {
    */
   getPreSignedBuildUrl = async (req: Request, res: Response) => {
     try {
-      const url = getBuildDownloadPreSignedUrl(req.params.dappId);
+      const url = getDownloadURL(req.params.dappId);
 
       return res.status(200).json({ success: true, url: url });
     } catch (e) {
