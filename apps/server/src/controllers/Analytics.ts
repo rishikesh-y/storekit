@@ -50,33 +50,33 @@ class AnalyticsController {
     return res.redirect(dapp.appUrl);
   }
 
-  async download(req: Request, res: Response) {
-    const { dappId } = req.params;
-    const userId = req.query.userId as string;
-    const userAddress = req.query.userAddress as string;
-    await this.registry.init();
-    const dapps = await this.registry.dApps();
-    const dapp = dapps.find((dapp) => dapp.dappId === dappId);
-    if (!dapp) {
-      return res.status(404).send("dApp Not found");
+    async download(req: Request, res: Response) {
+        const { dappId } = req.params;
+        const userId = req.query.userId as string;
+        const userAddress = req.query.userAddress as string;
+        await this.registry.init();
+        const dapps = await this.registry.dApps();
+        const dapp = dapps.find((dapp) => dapp.dappId === dappId);
+        if (!dapp) {
+            return res.status(404).send("dApp Not found");
+        }
+        if (
+            !dapp.appUrl ||
+            (!dapp.appUrl.endsWith(".zip") && !dapp.appUrl.endsWith(".apk"))
+        ) {
+            return res.status(404).send("No build for this dApp. Try viewing instead");
+        }
+        await registerDownload(
+            dappId,
+            dapp.version,
+            dapp.category,
+            userId,
+            userAddress,
+            req.headers["user-agent"] || ""
+        );
+        const url = getBuildDownloadPreSignedUrl(dappId);
+        return res.redirect(url);
     }
-    if (
-      !dapp.appUrl ||
-      (!dapp.appUrl.endsWith(".zip") && !dapp.appUrl.endsWith(".apk"))
-    ) {
-      return res.status(404).send("No App Download URL found");
-    }
-    await registerDownload(
-      dappId,
-      dapp.version,
-      dapp.category,
-      userId,
-      userAddress,
-      req.headers["user-agent"] || ""
-    );
-    const url = getBuildDownloadPreSignedUrl(dappId);
-    return res.redirect(url);
-  }
 
   async metrics(req: Request, res: Response) {
     const { dappId } = req.params;
