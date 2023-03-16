@@ -526,8 +526,15 @@ paths:
                 properties:
                   success:
                     type: boolean
-                  url:
-                    type: string
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        fileName:
+                          type: string
+                        url:
+                          type: string
         "400":
           description: Operation failed
 

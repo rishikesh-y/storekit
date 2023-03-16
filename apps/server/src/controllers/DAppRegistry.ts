@@ -270,10 +270,10 @@ class DappRegistry {
       try {
         await DappStore.init();
         const response = await DappStore.searchByDappId(dappId);
-        if(response.length === 0){
+        if (response.length === 0) {
           return res.status(404).json({
-            Message: "Dapp Not Found"
-          })
+            Message: "Dapp Not Found",
+          });
         }
         return res.json(response);
       } catch (e) {

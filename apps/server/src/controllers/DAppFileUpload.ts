@@ -3,15 +3,15 @@ import { Request, Response } from "express";
 import Dotenv from "dotenv";
 import AWS from "aws-sdk";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
-import fs from 'fs';
+import fs from "fs";
 
 Dotenv.config();
 
 // loading the ipfs-core package using dynamic import function.
-async function loadIpfs () {
-  const { create } = await import('ipfs-core')
-  const node = await create()
-  return node
+async function loadIpfs() {
+  const { create } = await import("ipfs-core");
+  const node = await create();
+  return node;
 }
 
 const s3 = new AWS.S3({
@@ -81,20 +81,20 @@ class awsS3Controller {
     try {
       // maximum count for screenshots is 5
       if (field === "screenshots" && req.files.length <= 5) {
-        const urls: {fileName: string; url: string}[] = [];
+        const urls: { fileName: string; url: string }[] = [];
         for (let i = 0; i < req.files.length; i++) {
           const filePath = req.files[i].path;
-          let url;
-          if(process.env.UPLOAD_SERVICE === 'ipfs'){
-            url = await this.fileUploadToIPFS(filePath);
-          }else{
-            const key = `${dappID}/${field}-${i}${extension}`;
-            url = await this.fileUploadsToS3(bucket, key, contentType, filePath);
-          }
+          const key = `${dappID}/${field}-${i}${extension}`;
+          const url = await this.uploadingFileBasedOnUploadService(
+            bucket,
+            key,
+            contentType,
+            filePath
+          );
           urls.push({
             fileName: req.files[i].originalname,
-            url: url
-          })
+            url: url,
+          });
         }
         return res.status(200).json({ success: true, data: urls });
       }
@@ -105,26 +105,58 @@ class awsS3Controller {
         });
       else {
         const filePath = req.files[0].path;
-        let url;
-        if(process.env.UPLOAD_SERVICE === 'ipfs'){
-          url = await this.fileUploadToIPFS(filePath);
-        }else{
-          url = await this.fileUploadsToS3(bucket, key, contentType, filePath);
-        }
-        return res.status(200).json({ success: true, data: {
-          fileName : req.files[0].originalname,
-          url : url
-        }});
+        const url = await this.uploadingFileBasedOnUploadService(
+          bucket,
+          key,
+          contentType,
+          filePath
+        );
+        return res.status(200).json({
+          success: true,
+          data: [
+            {
+              fileName: req.files[0].originalname,
+              url: url,
+            },
+          ],
+        });
       }
     } catch (e) {
       return res.status(400).json({ errors: [{ msg: e.message }] });
     }
-  }
+  };
+
+  /**
+   * Uploading file based on the UPLOAD_SERVICE env variable by default it will upload on ipfs.
+   */
+  private uploadingFileBasedOnUploadService = async (
+    bucket: string,
+    key: string,
+    contentType: string,
+    filePath: string
+  ) => {
+    const uploadService = process.env.UPLOAD_SERVICE
+      ? process.env.UPLOAD_SERVICE
+      : "ipfs";
+    switch (uploadService) {
+      case "aws-s3":
+        return await this.fileUploadsToS3(bucket, key, contentType, filePath);
+      case "ipfs":
+        return await this.fileUploadToIPFS(filePath);
+      default:
+        return await this.fileUploadToIPFS(filePath);
+    }
+  };
 
   /**
    * File upload to aws-s3 servers
    */
-  private fileUploadsToS3 = async (bucket: string, key: string, contentType: string, filePath: string) => {
+  private fileUploadsToS3 = async (
+    bucket: string,
+    key: string,
+    contentType: string,
+    filePath: string
+  ) => {
     try {
       const uploadCommand = {
         Bucket: bucket,
@@ -144,18 +176,18 @@ class awsS3Controller {
    */
   private fileUploadToIPFS = async (filePath: string) => {
     try {
-      if(!this.isIPFSLoaded){
+      if (!this.isIPFSLoaded) {
         this.ipfs = await loadIpfs();
         this.isIPFSLoaded = true;
       }
       const fileData = fs.createReadStream(filePath);
       const response = await this.ipfs.add(fileData);
-      const url = `https://ipfs.io/ipfs/${response.path}`
+      const url = `https://ipfs.io/ipfs/${response.path}`;
       return url;
     } catch (e) {
       return e;
     }
-  }
+  };
 
   /**
    * Get file presigned url from aws-s3 servers

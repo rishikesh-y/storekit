@@ -18,7 +18,11 @@ const Navbar: React.FunctionComponent = () => {
       </Link>
       <div className="flex flex-row items-center space-x-4 text-lg font-medium">
         <Link href={"/meroku-server"}>Backend APIs</Link>
-        { status === 'authenticated' ? <button onClick={() => signOut()} >Sign out</button> : <button onClick={() => signIn()} >Sign In</button> }
+        {status === "authenticated" ? (
+          <button onClick={() => signOut()}>Sign out</button>
+        ) : (
+          <button onClick={() => signIn()}>Sign In</button>
+        )}
       </div>
     </nav>
   );

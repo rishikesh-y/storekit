@@ -1,4 +1,4 @@
-import NextAuth, { Account, DefaultSession, Profile } from "next-auth"
+import NextAuth, { Account, DefaultSession, Profile } from "next-auth";
 
 declare module "next-auth" {
   /**
@@ -10,7 +10,7 @@ declare module "next-auth" {
       accessToken?: accessToken;
       id: string;
       username: string;
-    } & DefaultSession["user"]
+    } & DefaultSession["user"];
   }
 
   interface Profile {
