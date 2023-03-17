@@ -76,7 +76,7 @@ class AnalyticsController {
       userAddress,
       req.headers["user-agent"] || ""
     );
-    const url = getDownloadURL(dappId);
+    const url = await getDownloadURL(dappId);
     return res.redirect(url);
   }
 

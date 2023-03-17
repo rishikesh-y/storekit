@@ -2,10 +2,12 @@
 import { Request, Response } from "express";
 import Dotenv from "dotenv";
 import AWS from "aws-sdk";
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { S3Client } from "@aws-sdk/client-s3";
 import fs from "fs";
+import { DappStoreRegistry } from "@merokudao/dapp-store-registry";
 
 Dotenv.config();
+const DappStore = new DappStoreRegistry();
 
 // loading the ipfs-core package using dynamic import function.
 async function loadIpfs() {
@@ -29,12 +31,30 @@ const s3Client = new S3Client({
   },
 });
 
-export const getDownloadURL = (dappId: string) => {
-  return s3.getSignedUrl("getObject", {
-    Bucket: process.env.BUCKET_NAME_PRIVATE,
-    Key: `${dappId}/build.zip`,
-    Expires: 60 * 15, // 15 minutes,
-  });
+export const getDownloadURL = async (dappId: string) => {
+  await DappStore.init();
+  const dapp = DappStore.searchByDappId(dappId);
+  if (dapp[0].downloadBaseUrls) {
+    const isDownloadBaseUrlContainsS3 =
+      dapp[0].downloadBaseUrls[
+        dapp[0].downloadBaseUrls.length - 1
+      ].url.includes("s3");
+    const isDownloadBaseUrlContainsIpfs =
+      dapp[0].downloadBaseUrls[
+        dapp[0].downloadBaseUrls.length - 1
+      ].url.includes("ipfs");
+    if (isDownloadBaseUrlContainsS3) {
+      return s3.getSignedUrl("getObject", {
+        Bucket: process.env.BUCKET_NAME_PRIVATE,
+        Key: `${dappId}/build.zip`,
+        Expires: 60 * 15, // 15 minutes,
+      });
+    } else if (isDownloadBaseUrlContainsIpfs) {
+      const url =
+        dapp[0].downloadBaseUrls[dapp[0].downloadBaseUrls.length - 1].url;
+      return url;
+    }
+  }
 };
 
 class awsS3Controller {
@@ -182,9 +202,6 @@ class awsS3Controller {
         ContentType: contentType,
       };
       const response = await s3.upload(uploadCommand).promise();
-      if (field === "build") {
-        return getDownloadURL(dappId);
-      }
       return response.Location;
     } catch (e) {
       return e;
@@ -215,7 +232,7 @@ class awsS3Controller {
    */
   getPreSignedBuildUrl = async (req: Request, res: Response) => {
     try {
-      const url = getDownloadURL(req.params.dappId);
+      const url = await getDownloadURL(req.params.dappId);
 
       return res.status(200).json({ success: true, url: url });
     } catch (e) {
