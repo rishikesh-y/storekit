@@ -1,6 +1,9 @@
 import { Request, Response } from "express";
-import { DappStoreRegistry, FeaturedSection } from "@merokudao/dapp-store-registry";
-import { validationResult } from 'express-validator';
+import {
+  DappStoreRegistry,
+  FeaturedSection,
+} from "@merokudao/dapp-store-registry";
+import { validationResult } from "express-validator";
 import slugify from "slugify";
 import Debug from "debug";
 
@@ -20,7 +23,7 @@ class StoreRegistry {
       const response = await DappStore.getRegistryTitle();
       return res.json(response);
     } catch (e) {
-      return res.status(400).json({ errors: [{ msg: e.message }] })
+      return res.status(400).json({ errors: [{ msg: e.message }] });
     }
   };
 
@@ -30,7 +33,7 @@ class StoreRegistry {
       const response = await DappStore.getFeaturedDapps();
       return res.json(response);
     } catch (e) {
-      return res.status(400).json({ errors: [{ msg: e.message }] })
+      return res.status(400).json({ errors: [{ msg: e.message }] });
     }
   };
 
@@ -39,13 +42,8 @@ class StoreRegistry {
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-    const {
-      name,
-      description,
-      email,
-      accessToken,
-      githubID,
-      sectionTitle } = req.body;
+    const { name, description, email, accessToken, githubID, sectionTitle } =
+      req.body;
     const dappIds = req.body.dappIds as string[];
     try {
       await DappStore.init();
@@ -53,70 +51,74 @@ class StoreRegistry {
         title: sectionTitle,
         dappIds: dappIds,
         description: description,
-        key: slugify(sectionTitle, { lower: true })
+        key: slugify(sectionTitle, { lower: true }),
       };
-      const prUrl = await DappStore.addFeaturedSection(name,
+      const prUrl = await DappStore.addFeaturedSection(
+        name,
         email,
         accessToken,
         githubID,
-        section);
+        section
+      );
       return res.status(201).json(prUrl);
     } catch (e) {
-      return res.status(400).json({ errors: [{ msg: e.message }] })
+      return res.status(400).json({ errors: [{ msg: e.message }] });
     }
-  }
+  };
 
   deleteFeaturedSection = async (req: Request, res: Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-    const {
-      name,
-      email,
-      accessToken,
-      githubID,
-      sectionKey } = req.body;
+    const { name, email, accessToken, githubID, sectionKey } = req.body;
     try {
       await DappStore.init();
-      const prUrl = await DappStore.removeFeaturedSection(name,
+      const prUrl = await DappStore.removeFeaturedSection(
+        name,
         email,
         accessToken,
         githubID,
-        sectionKey);
+        sectionKey
+      );
       return res.status(200).json(prUrl);
     } catch (e) {
-      return res.status(400).json({ errors: [{ msg: e.message }] })
+      return res.status(400).json({ errors: [{ msg: e.message }] });
     }
-  }
+  };
 
   toggleFeaturedStatusOfDapp = async (req: Request, res: Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-    const {
+    const { name, email, accessToken, githubID, sectionKey } = req.body;
+    const dappIds = req.body.dappIds as string[];
+
+    debug(
+      "toggleFeaturedStatusOfDapp",
       name,
       email,
       accessToken,
       githubID,
-      sectionKey } = req.body;
-    const dappIds = req.body.dappIds as string[];
-
-    debug("toggleFeaturedStatusOfDapp", name, email, accessToken, githubID, sectionKey, dappIds);
+      sectionKey,
+      dappIds
+    );
     try {
       await DappStore.init();
-      const prUrl = await DappStore.toggleDappInFeaturedSection(name,
+      const prUrl = await DappStore.toggleDappInFeaturedSection(
+        name,
         email,
         accessToken,
         githubID,
         sectionKey,
-        dappIds);
+        dappIds
+      );
       return res.status(200).json(prUrl);
     } catch (e) {
-      return res.status(400).json({ errors: [{ msg: e.message }] })
+      return res.status(400).json({ errors: [{ msg: e.message }] });
     }
-  }
+  };
 }
 
 export const StoreRegistryController = new StoreRegistry();

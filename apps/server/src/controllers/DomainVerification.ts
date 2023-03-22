@@ -57,12 +57,12 @@ class DomainVerification {
     verificationKey: string,
     verificationValue: string
   ) {
-      const records = (
-        await resolveTxt(domain.replace(/^https?:\/\//, "").replace(/www\./, ""))
-      ).map((record) => record[0]);
-      return records
-        .filter((record) => record.startsWith(`${verificationKey}=`))
-        ?.some((record) => record.split("=")[1] === verificationValue);
+    const records = (
+      await resolveTxt(domain.replace(/^https?:\/\//, "").replace(/www\./, ""))
+    ).map((record) => record[0]);
+    return records
+      .filter((record) => record.startsWith(`${verificationKey}=`))
+      ?.some((record) => record.split("=")[1] === verificationValue);
   }
 
   async getVerificationId(req: Request, res: Response) {
@@ -166,7 +166,6 @@ class DomainVerification {
       domain: dappDomain.domain,
     });
   }
-
 }
 
 export const DomainVerificationController = new DomainVerification();
