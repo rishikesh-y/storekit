@@ -9,13 +9,21 @@ import {
 } from "./controllers";
 import { body, query } from "express-validator";
 import multer from "multer";
+import fs from "fs";
+import path from "path"
 
 const routes = Router();
 
 // upload dAppFiles to diskStorage
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "./src/uploads");
+    const folderPath = path.join(__dirname, "/uploads")
+    if (fs.existsSync(folderPath)) {
+      cb(null, folderPath);
+    } else {
+      fs.mkdirSync(folderPath);
+      cb(null, folderPath);
+    }
   },
 });
 var upload = multer({ storage: storage });

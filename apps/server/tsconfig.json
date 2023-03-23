@@ -4,13 +4,13 @@
     "esModuleInterop": true,
     "target": "es6",
     "noImplicitAny": false,
-    "moduleResolution": "nodenext",
+    "moduleResolution": "node",
     "sourceMap": true,
     "baseUrl": ".",
     "paths": {
       "*": ["node_modules/*"]
     },
-    "outDir": "dist",
+    "outDir": "dist/src",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true
   },

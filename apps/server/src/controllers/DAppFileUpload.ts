@@ -5,16 +5,10 @@ import AWS from "aws-sdk";
 import { S3Client } from "@aws-sdk/client-s3";
 import fs from "fs";
 import { DappStoreRegistry } from "@merokudao/dapp-store-registry";
+import { ThirdwebStorage } from "@thirdweb-dev/storage";
 
 Dotenv.config();
 const DappStore = new DappStoreRegistry();
-
-// loading the ipfs-core package using dynamic import function.
-async function loadIpfs() {
-  const { create } = await import("ipfs-core");
-  const node = await create();
-  return node;
-}
 
 const s3 = new AWS.S3({
   signatureVersion: "v4",
@@ -58,9 +52,9 @@ export const getDownloadURL = async (dappId: string) => {
 };
 
 class awsS3Controller {
-  private isIPFSLoaded = false;
   private ipfs;
   constructor() {
+    this.ipfs = new ThirdwebStorage();
     this.getPreSignedBuildUrl = this.getPreSignedBuildUrl.bind(this);
     this.deleteFile = this.deleteFile.bind(this);
   }
@@ -213,13 +207,10 @@ class awsS3Controller {
    */
   private fileUploadToIPFS = async (filePath: string) => {
     try {
-      if (!this.isIPFSLoaded) {
-        this.ipfs = await loadIpfs();
-        this.isIPFSLoaded = true;
-      }
-      const fileData = fs.createReadStream(filePath);
-      const response = await this.ipfs.add(fileData);
-      const url = `https://ipfs.io/ipfs/${response.path}`;
+      const fileData = fs.readFileSync(filePath);
+      const response = await this.ipfs.upload(fileData);
+      const url = this.ipfs.resolveScheme(response)
+      console.log(url);
       return url;
     } catch (e) {
       return e;

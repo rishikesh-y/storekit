@@ -7,7 +7,7 @@
     "build": "tsc --project ./",
     "clean": "rm -rf dist",
     "start:dev": "yarn clean && DEBUG=meroku:*,@merokudao:* nodemon src/server.ts",
-    "start:prod": "pm2-runtime start dist/server.js"
+    "start:prod": "pm2-runtime start dist/src/server.js"
   },
   "keywords": [],
   "author": "",
@@ -18,6 +18,7 @@
     "@merokudao/dapp-store-registry": "^0.1.28",
     "@octokit/auth-app": "^4.0.8",
     "@prisma/client": "^4.9.0",
+    "@thirdweb-dev/storage": "^1.1.0",
     "@types/debug": "^4.1.7",
     "@types/express": "^4.17.15",
     "aws-sdk": "^2.1287.0",
@@ -28,7 +29,6 @@
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "express-validator": "^6.14.2",
-    "ipfs-core": "^0.18.0",
     "multer": "^1.4.5-lts.1",
     "multer-s3": "^3.0.1",
     "pg": "^8.8.0",
