@@ -4,7 +4,7 @@
     "esModuleInterop": true,
     "target": "es6",
     "noImplicitAny": false,
-    "moduleResolution": "nodenext",
+    "moduleResolution": "node",
     "sourceMap": true,
     "baseUrl": ".",
     "paths": {
